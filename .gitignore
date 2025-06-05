@@ -132,4 +132,4 @@ cython_debug/
 
 
 # access tokens
-memory-builder/github-auth.json
+analyzer/github-auth.json
