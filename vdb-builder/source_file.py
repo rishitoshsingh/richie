@@ -1,5 +1,6 @@
 import json
 from langchain_core.documents import Document
+from prompts import get_file_analyzer_prompt
 
 class Repository:
 
@@ -22,10 +23,10 @@ class Repository:
         return prompt
 
 class File(Document):
-    def __init__(self, name: str, content: str):
+    def __init__(self, name: str, repo_name:str, content: str):
         if name.endswith('.ipynb'):
             content = self._extract_code_cells(content)
-        super().__init__(page_content=content, metadata={"name": name})
+        super().__init__(page_content=content, metadata={"name": name, "repo_name": repo_name})
 
     def _extract_code_cells(self, notebook_content):
         try:
@@ -44,59 +45,6 @@ class File(Document):
 
     def __repr__(self):
         return f"File(name={self.metadata["name"]})"
-
-    def get_prompt(self):
-        if self.metadata["name"].endswith('.py'):
-            prompt = "You are expert in finding what a piece of code does, using repository name, and file content. "
-            prompt += "I will give you a file name, repository name and the file content. "
-            prompt += "You will analyze this python code file then you will answer three questions. \n1. What is being done in this code file. \n2. What the author is trying to achieve, and\n3. What can you tell about the author's expertise\n\n"
-            prompt += "You should strictly follow following format to answer these questions, just replace <str> with your response. Don't use any other new_line character:\n"    
-            prompt += "code_description:\n<str>\nauthor_goal:\n<str>\nauthor_expertise:\n<str>\n\n"
-            prompt += "For each of the above keys, you should provide a string value in just one paragraph.\n\n"
-        if self.metadata["name"].endswith('.ipynb'):
-            prompt = "You are expert in finding what a piece of code does in jupyter notebook, using repository name, and code from notebook. "
-            prompt += "I will give you a file name, repository name and then the code from notebook"
-            prompt += "You will analyze this code then you will answer three questions. \n1. What is being done in the notebook. \n2. What the author is trying to achieve, and\n3. What can you tell about the author's expertise\n\n"
-            prompt += "You should strictly follow following format to answer these questions, just replace <str> with your response. Don't use any other new_line character:\n"    
-            prompt += "code_description:\n<str>\nauthor_goal:\n<str>\nauthor_expertise:\n<str>\n\n"
-            prompt += "For each of the above keys, you should provide a string value in just one paragraph.\n\n"
-        if self.metadata["name"].endswith('.cpp') or self.metadata["name"].endswith('.h') or self.metadata["name"].endswith('.c'):
-            prompt = "You are expert in finding what a piece of code does in C/C++ files, using repository name, and file content. "
-            prompt += "I will give you a file name, repository name and the file content. You will give me what does this code file do, what the author is trying to achieve, and what can you tell about the author's expertise\n\n"
-            prompt += "You should strictly follow following format, just replace <str> with your response. Don't use any other new_line character:\n"    
-            prompt += "code_description:\n<str>\nauthor_goal:\n<str>\nauthor_expertise:\n<str>\n\n"
-            prompt += "For each of the above keys, you should provide a string value in just one paragraph.\n\n"
-        if self.metadata["name"].endswith('html') or self.metadata["name"].endswith('htm'):
-            prompt = "You are expert in analyzing HTML files, using repository name, and the html file content. "
-            prompt += "I will give you a file name, repository name and the file content. "
-            prompt += "You will analyze this HTML file then you will answer three questions. \n1. What is being done in this code file. \n2. What the author is trying to achieve, and\n3. What can you tell about the author's expertise\n\n"
-            prompt += "You should strictly follow following format to answer these questions, just replace <str> with your response. Don't use any other new_line character:\n"    
-            prompt += "code_description:\n<str>\nauthor_goal:\n<str>\nauthor_expertise:\n<str>\n\n"
-            prompt += "For each of the above keys, you should provide a string value in just one paragraph.\n\n"
-        if self.metadata["name"].endswith('.css'):
-            prompt = "You are expert in analyzing CSS files, using repository name, and css file content. "
-            prompt += "I will give you a file name, repository name and the css file content. "
-            prompt += "You will analyze this css code file then you will answer three questions. \n1. What is being done in this code file. \n2. What the author is trying to achieve, and\n3. What can you tell about the author's expertise\n\n"
-            prompt += "You should strictly follow following format to answer these questions, just replace <str> with your response. Don't use any other new_line character:\n"    
-            prompt += "code_description:\n<str>\nauthor_goal:\n<str>\nauthor_expertise:\n<str>\n\n"
-            prompt += "For each of the above keys, you should provide a string value in just one paragraph.\n\n"
-        if self.metadata["name"].endswith('.js'):
-            prompt = "You are expert in finding what a piece of code does in JavaScript files, using repository name, and file content. "
-            prompt += "I will give you a file name, repository name and the js file content. "
-            prompt += "You will analyze this js code file then you will answer three questions. \n1. What is being done in this code file. \n2. What the author is trying to achieve, and\n3. What can you tell about the author's expertise\n\n"
-            prompt += "You should strictly follow following format to answer these questions, just replace <str> with your response. Don't use any other new_line character:\n"    
-            prompt += "code_description:\n<str>\nauthor_goal:\n<str>\nauthor_expertise:\n<str>\n\n"
-            prompt += "For each of the above keys, you should provide a string value in just one paragraph.\n\n"
-        if self.metadata["name"].endswith('.kt'):
-            prompt = "You are expert in finding what a piece of code does in Kotlin files and what kind of app the user is trying to make, using repository name, and file content. "
-            prompt += "I will give you a file name, repository name and the kotlin file content. "
-            prompt += "You will analyze this kotlin code file then you will answer three questions. \n1. What is being done in this code file. \n2. What the author is trying to achieve, and\n3. What can you tell about the author's expertise\n\n"
-            prompt += "You should strictly follow following format to answer these questions, just replace <str> with your response. Don't use any other new_line character:\n"    
-            prompt += "code_description:\n<str>\nauthor_goal:\n<str>\nauthor_expertise:\n<str>\n\n"
-            prompt += "For each of the above keys, you should provide a string value in just one paragraph.\n\n"
-        return prompt
-
-
 
 if __name__ == "__main__":
     RAW_URL = "https://github.com/rishitoshsingh/i2c/raw/7f5a5bf5385e2e691748e48f0b723e11be394784/OwnVisEncDec.ipynb"
