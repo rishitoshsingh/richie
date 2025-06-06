@@ -1,3 +1,7 @@
+import os
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+
 import requests
 import json
 import time
@@ -6,18 +10,18 @@ SLEEP_TIME=2
 import re
 
 # Replace with your GitHub username and personal access token
-with open('github-auth.json') as auth_file:
+with open(os.path.join(PROJECT_ROOT, "auth", "github-auth.json"), "r") as auth_file:
     auth_data = json.load(auth_file)
     GITHUB_USERNAME = auth_data['username']
     GITHUB_TOKEN = auth_data['access_token']
 
-with open("extensions.json", "r") as f:
+with open(os.path.join(SCRIPT_DIR, "extensions.json"), "r") as f:
     ext_data = json.load(f)
     required_extensions = set()
     for typ, exts in ext_data.items():
         required_extensions.update(exts)
 
-with open("modules.json", "r") as f:
+with open(os.path.join(SCRIPT_DIR, "modules.json"), "r") as f:
     module_data = json.load(f)
     required_modules = set()
     for typ, mods in module_data.items():
@@ -71,6 +75,7 @@ def main():
             'is_fork': repo['fork'],
             'files': [],
             'unique_file_extensions': set(),
+            'important_files': [],
             'modules': set(),
             'commits_by_user': []
         }
@@ -102,6 +107,8 @@ def main():
                                 'raw_url': file['raw_url'],
                                 'patch': file.get('patch', " ")
                             })
+                            repo_data['important_files'].append(file['filename'])
+                            # print(repo_data['important_files'])
                             if file_extension in ['py', 'ipynb', 'cpp']:
                                 file_content = requests.get(file['raw_url'], auth=(GITHUB_USERNAME, GITHUB_TOKEN)).text
                                 modules = extract_modules(file_content, file_extension)
@@ -114,7 +121,7 @@ def main():
         repo_data['modules'] = list(repo_data['modules'])
         all_repositories_data[repo_name] = repo_data
 
-    with open('user_repo_data.json', 'w') as json_file:
+    with open(os.path.join(SCRIPT_DIR, "user_repo_data-auth.json"), "w") as json_file:
         json.dump(all_repositories_data, json_file, indent=4)
 
 if __name__ == '__main__':

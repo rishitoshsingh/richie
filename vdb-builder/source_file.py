@@ -1,6 +1,26 @@
 import json
 from langchain_core.documents import Document
 
+class Repository:
+
+    def __init__(self, name: str, author: str, is_fork: bool, files: list, unique_file_extensions: set, modules: set, commits_by_user: list, important_files:list):
+        self.name = name
+        self.author = author
+        self.is_fork = is_fork
+        self.files = files
+        self.unique_file_extensions = unique_file_extensions
+        self.modules = modules
+        self.commits_by_user = commits_by_user
+        self.important_files = important_files
+    
+    def get_prompt(self):
+        prompt = "You are an expert in analyzing repositories. "
+        prompt += "I will give you a repository name, author, whether it is a fork, list of files, unique file extensions, modules used, commits by user and important files. "
+        prompt += "You will analyze this repository and provide insights about it.\n\n"
+        prompt += "You should strictly follow the following format to answer these questions, just replace <str> with your response. Don't use any other new_line character:\n"
+        prompt += "repository_name:\n<str>\nauthor:\n<str>\nis_fork:\n<str>\nfiles:\n<list>\nunique_file_extensions:\n<set>\nmodules:\n<set>\ncommits_by_user:\n<list>\nimportant_files:\n<list>\n\n"
+        return prompt
+
 class File(Document):
     def __init__(self, name: str, content: str):
         if name.endswith('.ipynb'):
