@@ -14,13 +14,8 @@ class Repository:
         self.commits_by_user = commits_by_user
         self.important_files = important_files
     
-    def get_prompt(self):
-        prompt = "You are an expert in analyzing repositories. "
-        prompt += "I will give you a repository name, author, whether it is a fork, list of files, unique file extensions, modules used, commits by user and important files. "
-        prompt += "You will analyze this repository and provide insights about it.\n\n"
-        prompt += "You should strictly follow the following format to answer these questions, just replace <str> with your response. Don't use any other new_line character:\n"
-        prompt += "repository_name:\n<str>\nauthor:\n<str>\nis_fork:\n<str>\nfiles:\n<list>\nunique_file_extensions:\n<set>\nmodules:\n<set>\ncommits_by_user:\n<list>\nimportant_files:\n<list>\n\n"
-        return prompt
+    def __repr__(self):
+        return f"Repository(name={self.name}, author={self.author}, is_fork={self.is_fork})"
 
 class File(Document):
     def __init__(self, name: str, repo_name:str, content: str):
