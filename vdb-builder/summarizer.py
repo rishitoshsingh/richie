@@ -11,3 +11,6 @@ with open(auth_path, "r") as f:
 os.environ["LANGSMITH_API_KEY"] = auth_data.get("LANGSMITH_API_KEY", "")
 
 REPO_DATA_PATH = os.path.join(PROJECT_ROOT, "analyzer", "user_repo_data.json")
+
+with open(REPO_DATA_PATH, "r") as f:
+    repo_data = json.load(f)

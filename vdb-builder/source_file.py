@@ -1,5 +1,15 @@
 import json
+import requests
 from langchain_core.documents import Document
+
+
+import os
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+with open(os.path.join(PROJECT_ROOT, "auth", "github-auth.json"), "r") as auth_file:
+    auth_data = json.load(auth_file)
+    GITHUB_USERNAME = auth_data['username']
+    GITHUB_TOKEN = auth_data['access_token']
 
 class Repository:
 
@@ -15,12 +25,16 @@ class Repository:
     
     def __repr__(self):
         return f"Repository(name={self.name}, author={self.author}, is_fork={self.is_fork})"
-
 class File(Document):
-    def __init__(self, name: str, repo_name:str, content: str):
+    def __init__(self, name: str, repo_name:str, raw_url: str):
+        content = self.get_file_content(raw_url)
         if name.endswith('.ipynb'):
             content = self._extract_code_cells(content)
         super().__init__(page_content=content, metadata={"name": name, "repo_name": repo_name})
+
+    @staticmethod
+    def get_file_content(raw_url: str):
+        return requests.get(raw_url, auth=(GITHUB_USERNAME, GITHUB_TOKEN)).text
 
     def _extract_code_cells(self, notebook_content):
         try:
@@ -42,7 +56,6 @@ class File(Document):
 
 if __name__ == "__main__":
     RAW_URL = "https://github.com/rishitoshsingh/i2c/raw/7f5a5bf5385e2e691748e48f0b723e11be394784/OwnVisEncDec.ipynb"
-    import requests
     with open('auth/github-auth.json') as auth_file:
         auth_data = json.load(auth_file)
         GITHUB_USERNAME = auth_data['username']
