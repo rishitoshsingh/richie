@@ -1,6 +1,5 @@
 import json
 from langchain_core.documents import Document
-from prompts import get_file_analyzer_prompt
 
 class Repository:
 

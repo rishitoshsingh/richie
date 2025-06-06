@@ -64,6 +64,13 @@ def extract_modules(file_content, file_type):
         include_statements = re.findall(r'^\s*#include\s*<([^>]+)>', file_content, re.MULTILINE)
         return list(set(include_statements))
 
+def is_within_hidden_folder(file_path):
+    parts = file_path.split(os.sep)
+    for part in parts:
+        if part.startswith('.') and part != '.':
+            return True
+    return False
+
 def main():
     all_repositories_data = {}
     repositories = get_repositories(GITHUB_USERNAME)
@@ -75,7 +82,7 @@ def main():
             'is_fork': repo['fork'],
             'files': [],
             'unique_file_extensions': set(),
-            'important_files': [],
+            'important_files': set(),
             'modules': set(),
             'commits_by_user': []
         }
@@ -98,6 +105,8 @@ def main():
                     repo_data['commits_by_user'].append(user_commit)
                     committed_files = []
                     for file in commit_details['files']:
+                        if is_within_hidden_folder(file['filename']):
+                            continue
                         repo_data['files'].append(file['filename'])
                         file_extension = file['filename'].split('.')[-1]
                         if f".{file_extension}" in required_extensions:
@@ -107,7 +116,7 @@ def main():
                                 'raw_url': file['raw_url'],
                                 'patch': file.get('patch', " ")
                             })
-                            repo_data['important_files'].append(file['filename'])
+                            repo_data['important_files'].update([file['filename']])
                             # print(repo_data['important_files'])
                             if file_extension in ['py', 'ipynb', 'cpp']:
                                 file_content = requests.get(file['raw_url'], auth=(GITHUB_USERNAME, GITHUB_TOKEN)).text
@@ -118,10 +127,11 @@ def main():
                         'committed_files': committed_files
                     })
         repo_data['unique_file_extensions'] = list(repo_data['unique_file_extensions'])
+        repo_data['important_files'] = list(repo_data['important_files'])
         repo_data['modules'] = list(repo_data['modules'])
         all_repositories_data[repo_name] = repo_data
 
-    with open(os.path.join(SCRIPT_DIR, "user_repo_data-auth.json"), "w") as json_file:
+    with open(os.path.join(SCRIPT_DIR, "user_repo_data.json"), "w") as json_file:
         json.dump(all_repositories_data, json_file, indent=4)
 
 if __name__ == '__main__':
