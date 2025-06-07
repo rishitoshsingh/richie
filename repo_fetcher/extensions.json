@@ -1,25 +1,7 @@
 {
     "Data Science/Machine Learning": [
         ".py",
-        ".ipynb",
-        ".csv",
-        ".tsv",
-        ".json",
-        ".npy",
-        ".npz",
-        ".h5",
-        ".hdf5",
-        ".pb",
-        ".onnx",
-        ".tflite",
-        ".ckpt",
-        ".pth",
-        ".pt",
-        ".joblib",
-        ".pkl",
-        ".md",
-        ".rst",
-        ".txt"
+        ".ipynb"
     ],
     "Software Development": [
         ".cpp",
@@ -35,20 +17,7 @@
         ".bat",
         ".ps1",
         ".go",
-        ".rb",
-        ".cfg",
-        ".ini",
-        ".exe",
-        ".dll",
-        ".so",
-        ".jar",
-        ".class",
-        ".o",
-        ".gradle",
-        ".pom",
-        ".csproj",
-        ".xcscheme",
-        ".xcconfig"
+        ".rb"
     ],
     "Web Development": [
         ".html",
@@ -69,16 +38,6 @@
     ],
     "Android App Development": [
         ".java",
-        ".kt",
-        ".xml",
-        ".gradle",
-        ".apk",
-        ".svg",
-        ".webp",
-        ".ico",
-        ".yaml",
-        ".aar",
-        ".dex",
-        ".so"
+        ".kt"
     ]
 }

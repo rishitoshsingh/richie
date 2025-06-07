@@ -22,7 +22,7 @@ class Repository:
         self.modules = modules
         self.commits_by_user = commits_by_user
         self.important_files = important_files
-        self.lang_documents = self.generate_langchain_documents(important_files, name)
+        self.v = self.generate_langchain_documents(important_files, name)
     
     def __repr__(self):
         return f"Repository(name={self.name}, author={self.author}, is_fork={self.is_fork})"

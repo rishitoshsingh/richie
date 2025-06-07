@@ -1,9 +1,6 @@
 import os
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
-import sys
-sys.path.insert(0, SCRIPT_DIR)
-print(sys.path)
 
 
 import json
@@ -22,9 +19,7 @@ with open(REPO_DATA_PATH, "r") as f:
 
 from source_file import Repository
 # repos = [Repository(**repo) for repo in repo_data]
-first_repo = Repository(**repo_data[1])
-
-
+first_repo = Repository(**repo_data[0])
 
 
 import os
@@ -46,8 +41,18 @@ llm = ChatGoogleGenerativeAI(
 from prompts import get_file_analyzer_prompt
 prompt = get_file_analyzer_prompt()
 
+
+
+
+
 chain = prompt | llm
-i=1
+i=0
+
+# f_name = first_repo.important_files[i].split("/")[-1]
+
+# with open(f_name, "w") as f:
+#     f.write(first_repo.lang_documents[i].page_content)
+
 res = chain.invoke({
     "filename": first_repo.important_files[i], 
     "repo_name": first_repo.name, 
