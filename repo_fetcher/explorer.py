@@ -27,21 +27,29 @@ with open(os.path.join(SCRIPT_DIR, "modules.json"), "r") as f:
     for typ, mods in module_data.items():
         required_modules.update(mods)
 
-def get_repositories(username):
-    url = f'https://api.github.com/user/repos?visibility=all&per_page=100'
-    response = requests.get(url, auth=(GITHUB_USERNAME, GITHUB_TOKEN))
+headers = {
+    "Authorization": f"token {GITHUB_TOKEN}",
+    "Accept": "application/vnd.github+json"
+}
+def get_repositories():
+    params = {
+        "visibility": "all",
+        "affiliation": "owner",
+        "per_page": 100
+    }
+    response = requests.get('https://api.github.com/user/repos', headers=headers, params=params)
     response.raise_for_status()
     return response.json()
 
 def get_commits(repo_name):
     url = f'https://api.github.com/repos/{GITHUB_USERNAME}/{repo_name}/commits'
-    response = requests.get(url, auth=(GITHUB_USERNAME, GITHUB_TOKEN))
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
     return response.json()
 
 def get_commit_details(repo_name, commit_sha):
     url = f'https://api.github.com/repos/{GITHUB_USERNAME}/{repo_name}/commits/{commit_sha}'
-    response = requests.get(url, auth=(GITHUB_USERNAME, GITHUB_TOKEN))
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
     return response.json()
 
@@ -72,12 +80,15 @@ def is_within_hidden_folder(file_path):
     return False
 
 def main():
-    all_repositories_data = {}
-    repositories = get_repositories(GITHUB_USERNAME)
+    all_repositories_data = []
+    repositories = get_repositories()
     for repo in tqdm(repositories, desc="Repositories"):
         repo_name = repo['name']
+        if repo["fork"]:
+            continue
         # print(f'Repository: {repo_name}')
         repo_data = {
+            'name': repo['name'],
             'author': repo['owner']['login'],
             'is_fork': repo['fork'],
             'files': [],
@@ -87,7 +98,7 @@ def main():
             'commits_by_user': []
         }
         if repo['owner']['login'] == GITHUB_USERNAME:
-            commits = get_commits(repo_name)
+            commits = get_commits(repo['name'])
         else:
             continue
         # for commit in tqdm(commits, desc=f"Commits in {repo_name}", leave=False):
@@ -96,7 +107,7 @@ def main():
                 commit_sha = commit['sha']
                 if commit["commit"]["author"]["name"] != GITHUB_USERNAME:
                     continue
-                commit_details = get_commit_details(repo_name, commit_sha)
+                commit_details = get_commit_details(repo['name'], commit_sha)
                 user_commit = {
                     'commithash': commit_sha,
                     'commit_message': commit_details['commit']['message']
@@ -129,9 +140,9 @@ def main():
         repo_data['unique_file_extensions'] = list(repo_data['unique_file_extensions'])
         repo_data['important_files'] = list(repo_data['important_files'])
         repo_data['modules'] = list(repo_data['modules'])
-        all_repositories_data[repo_name] = repo_data
+        all_repositories_data.append(repo_data)
 
-    with open(os.path.join(SCRIPT_DIR, "user_repo_data.json"), "w") as json_file:
+    with open(os.path.join(PROJECT_ROOT, "data", "user_repo_data.json"), "w") as json_file:
         json.dump(all_repositories_data, json_file, indent=4)
 
 if __name__ == '__main__':

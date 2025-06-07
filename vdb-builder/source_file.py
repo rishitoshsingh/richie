@@ -22,19 +22,32 @@ class Repository:
         self.modules = modules
         self.commits_by_user = commits_by_user
         self.important_files = important_files
+        self.lang_documents = self.generate_langchain_documents(important_files, name)
     
     def __repr__(self):
         return f"Repository(name={self.name}, author={self.author}, is_fork={self.is_fork})"
+    
+    @staticmethod
+    def generate_langchain_documents(important_files: list, repo_name: str):
+        print("Generating LangChain documents for important files in repository:", repo_name)
+        print(f"Found {len(important_files)} important files.")
+        return [File(name=file, repo_name=repo_name) for file in important_files]
+
 class File(Document):
-    def __init__(self, name: str, repo_name:str, raw_url: str):
-        content = self.get_file_content(raw_url)
+    def __init__(self, name: str, repo_name:str):
+        content = self.get_file_content(repo_name, name)
         if name.endswith('.ipynb'):
             content = self._extract_code_cells(content)
         super().__init__(page_content=content, metadata={"name": name, "repo_name": repo_name})
 
     @staticmethod
-    def get_file_content(raw_url: str):
-        return requests.get(raw_url, auth=(GITHUB_USERNAME, GITHUB_TOKEN)).text
+    def get_file_content(repo, path):
+        headers = {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github.raw+json"
+        }
+        url = f'https://api.github.com/repos/{GITHUB_USERNAME}/{repo}/contents/{path}'
+        return requests.get(url, headers=headers).text
 
     def _extract_code_cells(self, notebook_content):
         try:
@@ -55,18 +68,7 @@ class File(Document):
         return f"File(name={self.metadata["name"]})"
 
 if __name__ == "__main__":
-    RAW_URL = "https://github.com/rishitoshsingh/i2c/raw/7f5a5bf5385e2e691748e48f0b723e11be394784/OwnVisEncDec.ipynb"
-    with open('auth/github-auth.json') as auth_file:
-        auth_data = json.load(auth_file)
-        GITHUB_USERNAME = auth_data['username']
-        GITHUB_TOKEN = auth_data['access_token']
+    RAW_URL = "OwnVisEncDec.ipynb"
+    RAW_URL = "benchmark-amp.py"
 
-    def get_files(repo_name):
-        url = f'https://api.github.com/repos/{GITHUB_USERNAME}/{repo_name}/contents'
-        response = requests.get(url, auth=(GITHUB_USERNAME, GITHUB_TOKEN))
-        response.raise_for_status()
-        return response.json()
-    
-
-    file = File(RAW_URL, requests.get(RAW_URL).text)
-    print(file.get_prompt())
+    file = File(RAW_URL, "amp")
