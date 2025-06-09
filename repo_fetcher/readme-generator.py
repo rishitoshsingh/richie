@@ -1,12 +1,15 @@
 # %%
 import json
+
 with open("all_repositories_data.json", "r") as f:
     repositories_data = json.load(f)
 print("Number of repositories:", len(repositories_data))
+from pprint import pprint
+
 # %%
 import requests
 from tqdm import tqdm
-from pprint import pprint
+
 # Replace with your GitHub username and personal access token
 with open('github-auth.json') as auth_file:
     auth_data = json.load(auth_file)
@@ -98,9 +101,8 @@ def generate_prompt(r_name, file_name, file_content):
     return prompt
 
 # %%
-from ollama import chat
-from ollama import ChatResponse
-from ollama import Client
+from ollama import ChatResponse, Client, chat
+
 client = Client(
   host='http://scg004:11434',
 )

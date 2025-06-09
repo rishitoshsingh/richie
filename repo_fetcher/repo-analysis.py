@@ -1,11 +1,15 @@
 # %%
 import json
+
 with open("updated_repositories_data.json", "r") as f:
     repositories_data = json.load(f)
 print("Number of repositories:", len(repositories_data))
+from pprint import pprint
+
 # %%
 from tqdm import tqdm
-from pprint import pprint
+
+
 # %%
 def generate_prompt(r_name, llm_analysis):
     prompt = "You are an expoert project manager in a tech company. You can find out what a repository is all about given each file code description, author goal and author expertise. "
@@ -23,9 +27,8 @@ def generate_prompt(r_name, llm_analysis):
     return prompt
 
 # %%
-from ollama import chat
-from ollama import ChatResponse
-from ollama import Client
+from ollama import ChatResponse, Client, chat
+
 client = Client(
   host='http://scg014:11434',
 )
