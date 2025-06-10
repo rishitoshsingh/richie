@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from typing import Annotated, Sequence, TypedDict, Union
 
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -122,32 +123,39 @@ def summarize_repository(repo: Repository) -> RepoState:
     return app.invoke(state, {"recursion_limit": len(repo.important_files) + 10})
 
 
-def save_summary_to_file(summaries) -> None:
-    summary_path = os.path.join(PROJECT_ROOT, "data", f"user_repo_summaries.json")
+def save_summary(summary: dict) -> None:
+    summary_path = os.path.join(PROJECT_ROOT, "data", "user_repo_summaries.json")
+    if os.path.exists(summary_path):
+        with open(summary_path, "r") as f:
+            summaries = json.load(f)
+    else:
+        summaries = []
+    if any(s.get("repo_name") == summary.get("repo_name") for s in summaries):
+        # Update the existing summary for this repo_name
+        for i, s in enumerate(summaries):
+            if s.get("repo_name") == summary.get("repo_name"):
+                summaries[i].update(summary)
+    else:
+        summaries.append(summary)
     with open(summary_path, "w") as f:
         json.dump(summaries, f, indent=4)
 
-    print(f"Summaries saved to {summary_path}")
 
-
-summaries = []
-with tqdm(repo_data, desc="Summarizing repositories") as pbar:
+with tqdm(repo_data[:12], desc="Summarizing repositories") as pbar:
     for _rp in pbar:
         repo = Repository(**_rp)
         if len(repo.important_files) == 0:
             pbar.write(f"Skipping repository {repo.name} as it has no important files.")
             continue
         repo_state = summarize_repository(repo)
-        summaries.append(
-            {
-                "repo_name": repo.name,
-                "file_analysis": {
-                    f: s.text()
-                    for f, s in zip(
-                        repo_state["filenames"], repo_state["file_analysis"]
-                    )
-                },
-                "repo_summary": repo_state["repo_summaary"],
-            }
-        )
-save_summary_to_file(summaries)
+        summary = {
+            "repo_name": repo.name,
+            "file_analysis": {
+                f: s.text()
+                for f, s in zip(repo_state["filenames"], repo_state["file_analysis"])
+            },
+            "repo_summary": repo_state["repo_summaary"],
+        }
+        save_summary(summary)
+        pbar.write("Sleeping for 60 seconds...")
+        time.sleep(60)
