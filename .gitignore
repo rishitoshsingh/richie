@@ -136,3 +136,4 @@ auth/**
 
 # data
 data/**
+!data/visualizer.html

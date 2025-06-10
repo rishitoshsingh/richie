@@ -141,7 +141,7 @@ def save_summary(summary: dict) -> None:
         json.dump(summaries, f, indent=4)
 
 
-with tqdm(repo_data[:12], desc="Summarizing repositories") as pbar:
+with tqdm(repo_data, desc="Summarizing repositories") as pbar:
     for _rp in pbar:
         repo = Repository(**_rp)
         if len(repo.important_files) == 0:
