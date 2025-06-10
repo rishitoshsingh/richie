@@ -40,11 +40,11 @@ class Repository:
 
     @staticmethod
     def generate_langchain_documents(important_files: list, repo_name: str):
-        print(
-            "Generating LangChain documents for important files in repository:",
-            repo_name,
-        )
-        print(f"Found {len(important_files)} important files.")
+        # print(
+        #     "Generating LangChain documents for important files in repository:",
+        #     repo_name,
+        # )
+        # print(f"Found {len(important_files)} important files.")
         return [File(name=file, repo_name=repo_name) for file in important_files]
 
 

@@ -1,35 +1,32 @@
 import json
 import os
+from typing import Annotated, Sequence, TypedDict, Union
 
 from langchain_google_genai import ChatGoogleGenerativeAI
-from prompts import get_file_analyzer_prompt
+from langgraph.graph import END, START, StateGraph
+from langgraph.graph.message import add_messages
+from prompts import get_file_analyzer_prompt, get_repository_analyzer_prompt
+from source_file import Repository
+from tqdm import tqdm
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
 
-
-os.environ["LANGSMITH_TRACING"] = "true"
-auth_path = os.path.expanduser("auth/langsmith_auth.json")
-with open(auth_path, "r") as f:
-    auth_data = json.load(f)
-os.environ["LANGSMITH_API_KEY"] = auth_data.get("LANGSMITH_API_KEY", "")
-
-REPO_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "user_repo_data.json")
-
-with open(REPO_DATA_PATH, "r") as f:
-    repo_data = json.load(f)
-
-
-from source_file import Repository
-
-# repos = [Repository(**repo) for repo in repo_data]
-first_repo = Repository(**repo_data[0])
-
-
+# os.environ["LANGSMITH_TRACING"] = "true"
+# auth_path = os.path.expanduser("auth/langsmith_auth.json")
+# with open(auth_path, "r") as f:
+#     auth_data = json.load(f)
+# os.environ["LANGSMITH_API_KEY"] = auth_data.get("LANGSMITH_API_KEY", "")
 gemini_auth_path = os.path.expanduser("auth/gemini.json")
 with open(gemini_auth_path, "r") as f:
     gemini_auth_data = json.load(f)
 os.environ["GOOGLE_API_KEY"] = gemini_auth_data.get("api-key")
+
+
+REPO_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "user_repo_data.json")
+with open(REPO_DATA_PATH, "r") as f:
+    repo_data = json.load(f)
+# first_repo = Repository(**repo_data[0])
 
 
 llm = ChatGoogleGenerativeAI(
@@ -38,26 +35,119 @@ llm = ChatGoogleGenerativeAI(
     max_tokens=None,
     timeout=None,
     max_retries=2,
-    # other params...
 )
 
+file_analyzer_prompt = get_file_analyzer_prompt()
+repo_analyzer_prompt = get_repository_analyzer_prompt()
 
-prompt = get_file_analyzer_prompt()
+
+class RepoState(TypedDict):
+    n_files: int
+    repo_name: str
+    filenames: Sequence[str]
+    file_contents: Sequence[str]
+    completed_files: int
+    file_analysis: Annotated[Sequence[str], add_messages]
+    repo_summaary: Union[str, None]
 
 
-chain = prompt | llm
-i = 0
+def analyze_file(state: RepoState) -> RepoState:
+    response = llm.invoke(
+        file_analyzer_prompt.invoke(
+            {
+                "filename": state["filenames"][state["completed_files"] + 1],
+                "repo_name": state["repo_name"],
+                "file_content": state["file_contents"][state["completed_files"] + 1],
+            }
+        )
+    )
+    state["file_analysis"] = [
+        # {
+        #     "role": "user",
+        #     "content": f"The file name with actual file path is {state['filenames'][state['completed_files'] + 1]} and it belongs to {state['repo_name']} repository. "
+        #                f"The file content is as follows:\n{state['file_contents'][state['completed_files'] + 1]}\n\n",
+        # },
+        {
+            "role": "assistant",
+            "content": response.content,
+        },
+    ]
+    state["completed_files"] += 1
+    return state
 
-# f_name = first_repo.important_files[i].split("/")[-1]
 
-# with open(f_name, "w") as f:
-#     f.write(first_repo.lang_documents[i].page_content)
+def analyze_repository(state: RepoState) -> RepoState:
+    repo_analyzer_prompt.extend(state["file_analysis"])
+    response = llm.invoke(
+        repo_analyzer_prompt.invoke({"repo_name": state["repo_name"]})
+    )
+    state["repo_summaary"] = response.content
+    return state
 
-res = chain.invoke(
-    {
-        "filename": first_repo.important_files[i],
-        "repo_name": first_repo.name,
-        "file_content": first_repo.lang_documents[i].page_content,
+
+def all_file_summarized(state: RepoState) -> str:
+    if state["completed_files"] + 1 != state["n_files"]:
+        return False
+    else:
+        return True
+
+
+graph = StateGraph(RepoState)
+graph.add_node("analyze_file", analyze_file)
+graph.add_node("analyze_repository", analyze_repository)
+graph.add_edge(START, "analyze_file")
+graph.add_conditional_edges(
+    "analyze_file",
+    all_file_summarized,
+    {True: "analyze_repository", False: "analyze_file"},
+)
+graph.add_edge("analyze_repository", END)
+
+app = graph.compile()
+# graph_image = app.get_graph().draw_mermaid_png()
+# with open("graph.png", "wb") as f:
+#     f.write(graph_image)
+
+
+def summarize_repository(repo: Repository) -> RepoState:
+    state: RepoState = {
+        "n_files": len(repo.important_files),
+        "repo_name": repo.name,
+        "filenames": repo.important_files,
+        "file_contents": [file.page_content for file in repo.v],
+        "completed_files": -1,
+        "file_analysis": [],
+        "repo_summaary": None,
     }
-)
-print(res.content)
+    return app.invoke(state, {"recursion_limit": len(repo.important_files) + 10})
+
+
+def save_summary_to_file(summaries) -> None:
+    summary_path = os.path.join(PROJECT_ROOT, "data", f"user_repo_summaries.json")
+    with open(summary_path, "w") as f:
+        json.dump(summaries, f, indent=4)
+
+    print(f"Summaries saved to {summary_path}")
+
+
+summaries = []
+with tqdm(repo_data, desc="Summarizing repositories") as pbar:
+    for _rp in pbar:
+        repo = Repository(**_rp)
+        if len(repo.important_files) == 0:
+            pbar.write(f"Skipping repository {repo.name} as it has no important files.")
+            continue
+        repo_state = summarize_repository(repo)
+        summaries.append(
+            {
+                "repo_name": repo.name,
+                "file_analysis": {
+                    f: s.text()
+                    for f, s in zip(
+                        repo_state["filenames"], repo_state["file_analysis"]
+                    )
+                },
+                "repo_summary": repo_state["repo_summaary"],
+            }
+        )
+save_summary_to_file(summaries)
