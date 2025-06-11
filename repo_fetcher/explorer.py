@@ -29,6 +29,9 @@ with open(os.path.join(SCRIPT_DIR, "modules.json"), "r") as f:
     for typ, mods in module_data.items():
         required_modules.update(mods)
 
+with open(os.path.join(SCRIPT_DIR, "skip_files.json"), "r") as f:
+    skip_files = set(json.load(f))
+
 headers = {
     "Authorization": f"token {GITHUB_TOKEN}",
     "Accept": "application/vnd.github+json",
@@ -129,7 +132,10 @@ def main():
                 repo_data["commits_by_user"].append(user_commit)
                 committed_files = []
                 for file in commit_details["files"]:
-                    if is_within_hidden_folder(file["filename"]):
+                    if (
+                        is_within_hidden_folder(file["filename"])
+                        or file["filename"].split(os.path.sep)[-1] in skip_files
+                    ):
                         continue
                     repo_data["files"].append(file["filename"])
                     file_extension = file["filename"].split(".")[-1]

@@ -3,9 +3,11 @@ import os
 import time
 from typing import Annotated, Sequence, TypedDict, Union
 
+from langchain_core.documents import Document
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
+from model import get_model
 from prompts import get_file_analyzer_prompt, get_repository_analyzer_prompt
 from source_file import Repository
 from tqdm import tqdm
@@ -13,16 +15,12 @@ from tqdm import tqdm
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
 
+api_path = os.path.expanduser("auth/api.json")
+with open(api_path, "r") as f:
+    apis = json.load(f)
+os.environ["GOOGLE_API_KEY"] = apis.get("GCP")
 # os.environ["LANGSMITH_TRACING"] = "true"
-# auth_path = os.path.expanduser("auth/langsmith_auth.json")
-# with open(auth_path, "r") as f:
-#     auth_data = json.load(f)
-# os.environ["LANGSMITH_API_KEY"] = auth_data.get("LANGSMITH_API_KEY", "")
-gemini_auth_path = os.path.expanduser("auth/gemini.json")
-with open(gemini_auth_path, "r") as f:
-    gemini_auth_data = json.load(f)
-os.environ["GOOGLE_API_KEY"] = gemini_auth_data.get("api-key")
-
+# os.environ["LANGSMITH"] = auth_data.get("LANGSMITH_API_KEY", "")
 
 REPO_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "user_repo_data.json")
 with open(REPO_DATA_PATH, "r") as f:
@@ -30,13 +28,8 @@ with open(REPO_DATA_PATH, "r") as f:
 # first_repo = Repository(**repo_data[0])
 
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
-    temperature=0,
-    max_tokens=None,
-    timeout=None,
-    max_retries=2,
-)
+# llm = get_model("huggingface", "mistralai/Mistral-7B-Instruct-v0.3")
+llm = get_model("google")
 
 file_analyzer_prompt = get_file_analyzer_prompt()
 repo_analyzer_prompt = get_repository_analyzer_prompt()
@@ -63,24 +56,18 @@ def analyze_file(state: RepoState) -> RepoState:
         )
     )
     state["file_analysis"] = [
-        # {
-        #     "role": "user",
-        #     "content": f"The file name with actual file path is {state['filenames'][state['completed_files'] + 1]} and it belongs to {state['repo_name']} repository. "
-        #                f"The file content is as follows:\n{state['file_contents'][state['completed_files'] + 1]}\n\n",
-        # },
-        {
-            "role": "assistant",
-            "content": response.content,
-        },
+        response.content,
     ]
     state["completed_files"] += 1
     return state
 
 
 def analyze_repository(state: RepoState) -> RepoState:
-    repo_analyzer_prompt.extend(state["file_analysis"])
+    # repo_analyzer_prompt.extend(state["file_analysis"])
     response = llm.invoke(
-        repo_analyzer_prompt.invoke({"repo_name": state["repo_name"]})
+        repo_analyzer_prompt.invoke(
+            {"repo_name": state["repo_name"], "docs": state["file_analysis"]}
+        )
     )
     state["repo_summaary"] = response.content
     return state
@@ -141,7 +128,7 @@ def save_summary(summary: dict) -> None:
         json.dump(summaries, f, indent=4)
 
 
-with tqdm(repo_data, desc="Summarizing repositories") as pbar:
+with tqdm(repo_data[2:3], desc="Summarizing repositories") as pbar:
     for _rp in pbar:
         repo = Repository(**_rp)
         if len(repo.important_files) == 0:

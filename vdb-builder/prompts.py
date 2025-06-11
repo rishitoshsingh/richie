@@ -7,10 +7,13 @@ def get_file_analyzer_prompt():
             (
                 "system",
                 "You are a technical recruiter who is an expert in analyzing code files from repositories. You will be given a file name, \
-                    repository name and the file content. You will analyze this code then you will answer three questions. \n \
+                    repository name and the file content. You will analyze this code and your analysis shoulld be able to answer three questions. \n \
                     1. What is being done in this code file. \n \
                     2. What the developer is trying to achieve, and\n \
-                    3. What can you tell about the author's expertise\n\n ",
+                    3. What can you tell about the author's expertise, the frameworks, libraries or tech stack he is experienced with\n \
+                Whatever you will say will be used to summarize the project repository, so try to include all important messages\n \
+                Avoid using technical terms, just think that main audience of this will not have just a little bit of \
+                technical knowledge, so avoid technical jargons\n ",
             ),
             (
                 "user",
@@ -27,18 +30,19 @@ def get_repository_analyzer_prompt():
         [
             (
                 "system",
-                "You are a technical recruiter who is an expert in analyzing code files from repositories. \
-                    One LLM agent have aleady analyzed all the important files in the repository. Now you will summarize the findings of the repository. \
-                    You will be given the repository name followed by complete analysis of each file done by another LLM agent. You will try to find answer to these questions:\n \
-                    1. What is the repository about and what developer is trying to develop? \n \
-                    2. What can you comment about the expertise of the developer?\n \
-                    3. What can you comment on the developer's experience and which kind of role he will be fit for?\n\n \
-                    Give a very detailed report which can be used to understand the repository and the developer's expertise.",
+                "You are an expert in giving detail report of project repositories using the individual code file summaries. \
+                    One LLM agent have aleady analyzed all the important files in the project repository. Now you will report the findings of the repository. \
+                    You will be given the repository name followed by complete analysis of each file done by another LLM agent. \
+                    From your report anybody should be able to answer these question:\n \
+                        1. What is the repository about and what developer is trying to develop? \n \
+                        2. What can you comment about the expertise of the developer?\n \
+                        3. What can you comment on the developer's experience and which kind of role he will be fit for?\n \
+                        3. What technology stack, libraries or frameworks the developer is experienced in?\n\n \
+                    Give a very detailed report using paragraphs, no bullet points which can be used to understand the repository and the developer's expertise and don't include anything negative about the developer",
             ),
             (
                 "user",
-                "Here's the repository name: {repo_name}. Now, you will be provided by the analysis of each importatnt files\
-         \n\n Please summarize the findings of the repository in not more than 3 paragraphs and be it should be high level. \n\n",
+                "Here's the repository name: {repo_name}. Following are the analysis of each code files in the project repository \n {docs} \n\n",
             ),
         ]
     )

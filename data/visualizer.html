@@ -100,7 +100,8 @@
                     body.className = 'repo-body';
 
                     const summary = document.createElement('p');
-                    summary.innerHTML = `<strong>Repo Summary:</strong> ${repo.repo_summary}`;
+                    summary.innerHTML = `<strong>Repo Summary:</strong> <div class="markdown">${marked.parse(repo.repo_summary)}</div>`;
+                    // summary.innerHTML = `<strong>Repo Summary:</strong> ${repo.repo_summary}`;
                     body.appendChild(summary);
 
                     const fileAnalysisDiv = document.createElement('div');
