@@ -1,6 +1,6 @@
-import json
 import os
 
+from dotenv import load_dotenv
 from langchain_core.documents import Document
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import START, StateGraph
@@ -8,18 +8,13 @@ from prompts import rag_prompt
 from typing_extensions import List, TypedDict
 from utils import Database
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
-api_path = os.path.join(PROJECT_ROOT, "auth", "api.json")
-with open(api_path, "r") as f:
-    apis = json.load(f)
-os.environ["GOOGLE_API_KEY"] = apis.get("GCP2")
+load_dotenv()
 
 richi_db = Database(
-    pinecone_api=apis.get("PINECONE"),
-    vec_db_host=apis.get("PINECONE_INDEX"),
+    pinecone_api=os.getenv("PINECONE_API"),
+    vec_db_host=os.getenv("PINECONE_INDEX"),
     mongo_collection="project-summaries",
-    mongo_host=apis.get("MONGODB").get("HOST"),
+    mongo_host=os.getenv("MONGODB_HOST"),
 )
 
 llm = ChatGoogleGenerativeAI(

@@ -1,15 +1,10 @@
-import json
 import os
 
+from dotenv import load_dotenv
 from pinecone import Pinecone
 from pymongo import MongoClient
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
-
-api_path = os.path.join(PROJECT_ROOT, "auth", "api.json")
-with open(api_path, "r") as f:
-    apis = json.load(f)
+load_dotenv()
 
 
 class Database:
@@ -62,10 +57,11 @@ class Database:
 
 
 if __name__ == "__main__":
+    print(os.getenv("PINECONE_API"))
     richi_db = Database(
-        pinecone_api=apis.get("PINECONE"),
-        vec_db_host=apis.get("PINECONE_INDEX"),
+        pinecone_api=os.getenv("PINECONE_API"),
+        vec_db_host=os.getenv("PINECONE_INDEX"),
         mongo_collection="project-summaries",
-        mongo_host=apis.get("MONGODB").get("HOST"),
+        mongo_host=os.getenv("MONGODB_HOST"),
     )
     print(richi_db.search("Does the candidate have experience with pytorch?"))
