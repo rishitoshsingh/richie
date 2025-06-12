@@ -5,6 +5,7 @@ import streamlit as st
 from rag import graph
 
 st.title("Richie")
+st.caption("🚀 A persona of Rishi")
 
 # Initialize chat history
 if "messages" not in st.session_state:
