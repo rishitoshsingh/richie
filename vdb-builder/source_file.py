@@ -52,7 +52,7 @@ class File(Document):
     def __init__(self, name: str, repo_name: str):
         content = self.get_file_content(repo_name, name)
         if name.endswith(".ipynb"):
-            content = self._extract_code_cells(content)
+            content = self._extract_code_cells(content, name)
         super().__init__(
             page_content=content, metadata={"name": name, "repo_name": repo_name}
         )
@@ -66,7 +66,7 @@ class File(Document):
         url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{repo}/contents/{path}"
         return requests.get(url, headers=headers).text
 
-    def _extract_code_cells(self, notebook_content):
+    def _extract_code_cells(self, notebook_content, name):
         try:
             notebook = json.loads(notebook_content)
             code_cells = []
@@ -81,11 +81,11 @@ class File(Document):
                     code_cells.append("".join(commented_lines))
             return "\n\n".join(code_cells)
         except json.JSONDecodeError:
-            print("Error decoding JSON from notebook content for file:", self.name)
+            print("Error decoding JSON from notebook content for file:", name)
             return ""
 
     def __repr__(self):
-        return f"File(name={self.metadata["name"]})"
+        return f"File(name={self.metadata['name']})"
 
 
 if __name__ == "__main__":

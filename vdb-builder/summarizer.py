@@ -1,6 +1,5 @@
 import json
 import os
-import time
 from typing import Annotated, Sequence, TypedDict, Union
 
 from langchain_core.documents import Document
@@ -18,7 +17,7 @@ PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
 api_path = os.path.expanduser("auth/api.json")
 with open(api_path, "r") as f:
     apis = json.load(f)
-os.environ["GOOGLE_API_KEY"] = apis.get("GCP")
+os.environ["GOOGLE_API_KEY"] = apis.get("GCP2")
 # os.environ["LANGSMITH_TRACING"] = "true"
 # os.environ["LANGSMITH"] = auth_data.get("LANGSMITH_API_KEY", "")
 
@@ -128,7 +127,7 @@ def save_summary(summary: dict) -> None:
         json.dump(summaries, f, indent=4)
 
 
-with tqdm(repo_data[12:], desc="Summarizing repositories") as pbar:
+with tqdm(repo_data[32:], desc="Summarizing repositories") as pbar:
     for _rp in pbar:
         repo = Repository(**_rp)
         if len(repo.important_files) == 0:
@@ -144,5 +143,3 @@ with tqdm(repo_data[12:], desc="Summarizing repositories") as pbar:
             "repo_summary": repo_state["repo_summaary"],
         }
         save_summary(summary)
-        pbar.write("Sleeping for 60 seconds...")
-        time.sleep(60)
