@@ -59,7 +59,6 @@ class TokenRateChatGoogleGenerativeAI(ChatGoogleGenerativeAI, BaseModel):
 def get_model(provider: str, model: Optional[str] = None, **kwargs):
     if provider == "google":
         from langchain_core.rate_limiters import InMemoryRateLimiter
-        from langchain_google_genai import ChatGoogleGenerativeAI
 
         PERMINUTE_RATE = 15
         google_rate_limiter = InMemoryRateLimiter(

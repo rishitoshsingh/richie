@@ -2,7 +2,8 @@ import time
 
 import streamlit as st
 
-from rag import graph
+from rag.graph.consts import CONTEXT_CHATBOT, GENERAL_CHATBOT, OUT_OF_SCOPE_CHATBOT
+from rag.graph.graph import richie_graph
 
 st.title("Richie")
 st.caption("🚀 A persona of Rishi")
@@ -34,8 +35,15 @@ if prompt := st.chat_input("What you want to know about me?"):
 
 #  Streamed response emulator
 def response_generator(query):
-    for chunk, metadata in graph.stream({"question": query}, stream_mode="messages"):
-        if chunk.content and metadata["langgraph_node"] == "generate":
+
+    for chunk, metadata in richie_graph.stream(
+        {"query": query}, stream_mode="messages"
+    ):
+        if chunk.content and (
+            metadata["langgraph_node"] == CONTEXT_CHATBOT
+            or metadata["langgraph_node"] == GENERAL_CHATBOT
+            or metadata["langgraph_node"] == OUT_OF_SCOPE_CHATBOT
+        ):
             yield chunk.content
 
 
