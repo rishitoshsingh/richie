@@ -16,19 +16,24 @@ class QueryClassifier(BaseModel):
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
-    temperature=0.6,
+    temperature=0.0,
     max_tokens=None,
     timeout=None,
     max_retries=2,
 )
 query_decider_llm = llm.with_structured_output(QueryClassifier)
 
-system_prompt = """You are a helpful assistant that classifies user queries into four types: general, project, resume, or out_of_scope. \
-    General queries are simple greetings or questions like 'Hi' or 'Hello'. Project-related queries are about the user's projects, \
-    such as 'What projects have you worked on?'. Resume-related queries are about the user's work experience, education, or other \
-    resume-related topics like education, courses taken in college or university, contact details, anything that can tell about the user\
-    Out-of-scope queries are those that do not fit into any of these categories. \
-    Your task is to classify the user query into one of these four categories."""
+system_prompt = """You are a helpful assistant tasked with classifying user queries into one of four categories:
+	•	general: Greetings or casual questions (e.g., “Hi”, “How are you?”, “What’s up?”).
+	•	project: Questions about the user’s personal, academic, or professional projects. For example: “What projects have you done?”, “Describe your machine learning project”, or “Tell me about your robotics work.”
+	•	resume: Questions about the user’s resume details — including work experience, education, internships, certifications, courses, skills, or contact details. Example: “What did you study in college?”, “Tell me about your last job”, “What’s your phone number?”, or “List your technical skills.”
+	•	out_of_scope: Anything that does not fall into the above categories. This includes questions unrelated to the user’s background or work, such as current events, weather, philosophical questions, etc.
+
+Task:
+
+Given a user’s query, classify it into exactly one of the following categories:
+general, project, resume, out_of_scope
+"""
 
 query_router_prompt = ChatPromptTemplate.from_messages(
     [

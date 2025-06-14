@@ -18,7 +18,7 @@ class GradeAnswer(BaseModel):
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
-    temperature=0.6,
+    temperature=0.0,
     max_tokens=None,
     timeout=None,
     max_retries=2,
