@@ -1,5 +1,8 @@
 # richie
 
+## Try it live
+[Hosted on Streamlit](https://richie.streamlit.app)
+
 ## Setup
 
 1. Create a fine-grained GitHub API token with all repository access with "Contents" and "Metadata" set to Read-Only.
