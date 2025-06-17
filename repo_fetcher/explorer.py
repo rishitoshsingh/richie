@@ -166,7 +166,7 @@ def main():
         all_repositories_data.append(repo_data)
 
     with open(
-        os.path.join(PROJECT_ROOT, "data", "user_repo_data.json"), "w"
+        os.path.join(PROJECT_ROOT, "data", "user_repo_data_new.json"), "w"
     ) as json_file:
         json.dump(all_repositories_data, json_file, indent=4)
 
