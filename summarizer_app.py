@@ -54,10 +54,11 @@ def save_summary(summary: dict) -> None:
 # repo_state = summarize_repository(Repository(**repo_data[0]))
 
 
-with tqdm(repo_data[19:], desc="Summarizing repositories") as pbar:
+with tqdm(repo_data[40:], desc="Summarizing repositories") as pbar:
     # with tqdm(repo_data[15:], desc="Summarizing repositories") as pbar:
     for _rp in pbar:
         repo = Repository(**_rp)
+        pbar.write(f"Processing repository: {repo.name}")
         if len(repo.important_files) == 0:
             pbar.write(f"Skipping repository {repo.name} as it has no important files.")
             continue
@@ -71,3 +72,7 @@ with tqdm(repo_data[19:], desc="Summarizing repositories") as pbar:
             "project_analysis": repo_state["project_analysis"],
         }
         save_summary(summary)
+
+# TODO; Process 36 index, techlearn-projects
+# TODO: Process 36 index, -api
+# TODO: Process 37 index
