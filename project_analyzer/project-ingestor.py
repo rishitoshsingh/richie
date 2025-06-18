@@ -3,17 +3,16 @@ import os
 import time
 from typing import TypedDict, Union
 
+from dotenv import load_dotenv
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pinecone import Pinecone
 from pymongo import MongoClient
 from tqdm import tqdm
 
-api_path = os.path.expanduser("auth/api.json")
-with open(api_path, "r") as f:
-    apis = json.load(f)
+load_dotenv()
 
-pc = Pinecone(api_key=apis.get("PINECONE"))
-index = pc.Index(host="https://richie-brain-384-roilyxl.svc.aped-4627-b74a.pinecone.io")
+pc = Pinecone(api_key=os.environ.get("PINECONE_API"))
+index = pc.Index(host=os.environ.get("PINECONE_INDEX"))
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)

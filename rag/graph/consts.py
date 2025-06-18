@@ -5,5 +5,5 @@ PROMPT_ENGINEERING = "prompt_engineering_node"
 ANSWER_GRADER = "answer_grader_node"
 QUERY_CLASSIFIER = "query_classifier_node"
 
-RESUME_RETREIVE_NAMESPACE = "resume-summaries"
-PROJECT_RETREIVE_NAMESPACE = "project-summaries"
+RESUME_RETREIVE_NAMESPACE = "resume-analysis"
+PROJECT_RETREIVE_NAMESPACE = "project-analysis"
