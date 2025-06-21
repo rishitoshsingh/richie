@@ -34,10 +34,10 @@ if prompt := st.chat_input("What you want to know about me?"):
 
 
 #  Streamed response emulator
-def response_generator(query):
+def response_generator(query, messages=None):
 
     for chunk, metadata in richie_graph.stream(
-        {"query": query}, stream_mode="messages"
+        {"query": query, "messages": messages}, stream_mode="messages"
     ):
         if chunk.content and (
             metadata["langgraph_node"] == CONTEXT_CHATBOT
@@ -53,6 +53,12 @@ if st.session_state.messages and st.session_state.messages[-1]["role"] == "user"
         avatar="https://0.gravatar.com/avatar/d391fa37f93e8cf1193cba1c40e15fee950e021f4005e52c531f80ba774cf6e8?size=256&d=initials",
     ):
         response = st.write_stream(
-            response_generator(st.session_state.messages[-1]["content"])
+            response_generator(
+                query=st.session_state.messages[-1]["content"],
+                messages=[
+                    {"role": m["role"], "content": m["content"]}
+                    for m in st.session_state.messages
+                ],
+            )
         )
         st.session_state.messages.append({"role": "assistant", "content": response})

@@ -19,5 +19,11 @@ def context_chatbot_node(state: RichieGraphState) -> Dict[str, str]:
     context = richi_db.search(
         query=query, namespace=state["retrieve_namespace"], top_k=100
     )
-    result = rag_chain.invoke({"query": state["modified_query"], "context": context})
+    result = rag_chain.invoke(
+        {
+            "query": state["modified_query"],
+            "context": context,
+            "chat_history": state["messages"],
+        }
+    )
     return {"answer": result.content}

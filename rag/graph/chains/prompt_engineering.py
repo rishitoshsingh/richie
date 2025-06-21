@@ -27,7 +27,7 @@ search_query_formatter_llm = llm.with_structured_output(SearchQuery)
 system_prompt = """You are a helpful assistant that reformulates user questions to improve document retrieval in a RAG (Retrieval-Augmented Generation) system. \
     "Your goal is to rewrite the user's query in to be standalone, clear, and optimized for retrieving relevant \
     "documents—even if the original question is vague, follow-up-based, or context-dependent. Do not answer \
-    "the question. Only rewrite it for retrieval. Preserve the user's intent to know about the owner and include necessary context to make it specific."""
+    "the question. Only rewrite it for retrieval. Preserve the user's intent to know about the owner Rishi or rishitosh or richie and include necessary context to make it specific."""
 
 
 search_router_prompt = ChatPromptTemplate.from_messages(
