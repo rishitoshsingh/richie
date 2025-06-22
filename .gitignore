@@ -138,3 +138,6 @@ auth/**
 # data
 data/**
 !data/visualizer.html
+!data/app.py
+!data/templates/
+!data/templates/index.html

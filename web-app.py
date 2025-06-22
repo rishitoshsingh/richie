@@ -1,4 +1,3 @@
-import time
 from datetime import datetime
 
 import streamlit as st
@@ -41,7 +40,6 @@ def save_chat_history():
             {
                 "role": message["role"],
                 "content": message["content"],
-                "timestamp": datetime.now(),
             }
         )
 
