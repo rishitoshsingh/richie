@@ -1,8 +1,8 @@
-pymongo
-pinecone
-langgraph
-langchain
-langchain-core
-pydantic
-langchain-google-genai
-openai
+pymongo==4.13.1
+pinecone==7.0.2
+langgraph==0.4.8
+langchain==0.3.25
+langchain-core==0.3.65
+pydantic==2.10.2
+langchain-google-genai==2.1.5
+openai==1.88.0
