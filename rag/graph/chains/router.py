@@ -23,7 +23,7 @@ llm = ChatGoogleGenerativeAI(
 )
 query_decider_llm = llm.with_structured_output(QueryClassifier)
 
-system_prompt = """You are a helpful assistant that classifies user queries into four types: general, project, resume, or out_of_scope. \Add commentMore actions
+system_prompt = """You are a helpful assistant that classifies user queries into four types: general, project, resume, or out_of_scope. \
     General queries are simple greetings or questions like 'Hi' or 'Hello'. Project-related queries are about the user's projects, \
     such as 'What projects have you worked on?'. Resume-related queries are about the user's work experience, education, or other \
     resume-related topics like education, courses taken in college or university, contact details, anything that can tell about the user\

@@ -1,4 +1,4 @@
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableSequence
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -25,6 +25,7 @@ general_answering_prompt = ChatPromptTemplate.from_messages(
             "system",
             system_prompt,
         ),
+        MessagesPlaceholder("chat_history"),
         ("user", "{query}"),
     ]
 )
