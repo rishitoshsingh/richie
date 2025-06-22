@@ -11,8 +11,6 @@ class Database:
     def __init__(
         self, pinecone_api, vec_db_host, mongo_database, mongo_collection, mongo_host
     ):
-        print("pinecone_api", pinecone_api)
-        print("vec_db_host", vec_db_host)
         self.vec_index = Pinecone(api_key=pinecone_api).Index(host=vec_db_host)
         self.mongo_collection = MongoClient(mongo_host)[mongo_database][
             mongo_collection
@@ -44,7 +42,7 @@ class Database:
             results = self.search_in_vector_index(
                 vector=self.get_embedding(query), namespace=namespace, top_k=top_k
             )
-            print(results)
+            # print(results)
 
             unique_repos = set()
             for matches in results["matches"]:
@@ -59,7 +57,7 @@ class Database:
             results = self.search_in_vector_index(
                 vector=self.get_embedding(query), namespace=namespace, top_k=top_k
             )
-            print(results)
+            # print(results)
             documents = []
             for matches in results["matches"]:
                 documents.append(matches["metadata"]["text"])

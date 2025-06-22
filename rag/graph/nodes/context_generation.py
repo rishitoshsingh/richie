@@ -9,9 +9,9 @@ from rag.graph.chains.context_generation import rag_chain
 from rag.graph.state import RichieGraphState
 from rag.graph.utils import Database
 
-print(os.getenv("PINECONE_API"))
-print(os.getenv("PINECONE_INDEX_DEV"))
-print(os.getenv("MONGODB_HOST"))
+# print(os.getenv("PINECONE_API"))
+# print(os.getenv("PINECONE_INDEX_DEV"))
+# print(os.getenv("MONGODB_HOST"))
 
 richi_db = Database(
     pinecone_api=os.getenv("PINECONE_API"),
@@ -32,7 +32,7 @@ def context_chatbot_node(state: RichieGraphState) -> Dict[str, str]:
         {
             "query": state["modified_query"],
             "context": context,
-            "chat_history": state["messages"],
+            "chat_history": state["chat_history"],
         }
     )
     return {"answer": result.content}

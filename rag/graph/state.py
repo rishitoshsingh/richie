@@ -9,4 +9,4 @@ class RichieGraphState(TypedDict):
     retrieve_namespace: str
     router_next_state: str
     answer_correct: str
-    messages: list[dict[str, str]]
+    chat_history: list[dict[str, str]]

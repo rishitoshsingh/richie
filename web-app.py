@@ -1,10 +1,58 @@
 import time
+from datetime import datetime
 
 import streamlit as st
+from dotenv import load_dotenv
+from pymongo import MongoClient
 
 from rag.graph.consts import CONTEXT_CHATBOT, GENERAL_CHATBOT, OUT_OF_SCOPE_CHATBOT
 from rag.graph.graph import richie_graph
 
+load_dotenv()
+import os
+
+mongo_collection = MongoClient(os.environ.get("MONGODB_HOST"))["chat-history"][
+    "sessions"
+]
+
+# Chat history saver
+
+
+def _get_session():
+    from streamlit.runtime import get_instance
+    from streamlit.runtime.scriptrunner import get_script_run_ctx
+
+    runtime = get_instance()
+    session_id = get_script_run_ctx().session_id
+    session_info = runtime._session_mgr.get_session_info(session_id)
+    if session_info is None:
+        raise RuntimeError("Couldn't get your Streamlit Session object.")
+    return session_info.session
+
+
+def save_chat_history():
+    session = _get_session()
+    if session is None:
+        return
+
+    chat_history = []
+    for message in st.session_state.messages:
+        chat_history.append(
+            {
+                "role": message["role"],
+                "content": message["content"],
+                "timestamp": datetime.now(),
+            }
+        )
+
+    mongo_collection.update_one(
+        {"session_id": session.id},
+        {"$set": {"chat_history": chat_history, "updated_at": datetime.now()}},
+        upsert=True,
+    )
+
+
+# Streamlit app setup
 st.title("Richie")
 st.caption("🚀 A persona of Rishi")
 
@@ -34,10 +82,10 @@ if prompt := st.chat_input("What you want to know about me?"):
 
 
 #  Streamed response emulator
-def response_generator(query, messages=None):
+def response_generator(query, chat_history=None):
 
     for chunk, metadata in richie_graph.stream(
-        {"query": query, "messages": messages}, stream_mode="messages"
+        {"query": query, "chat_history": chat_history}, stream_mode="messages"
     ):
         if chunk.content and (
             metadata["langgraph_node"] == CONTEXT_CHATBOT
@@ -55,10 +103,11 @@ if st.session_state.messages and st.session_state.messages[-1]["role"] == "user"
         response = st.write_stream(
             response_generator(
                 query=st.session_state.messages[-1]["content"],
-                messages=[
+                chat_history=[
                     {"role": m["role"], "content": m["content"]}
                     for m in st.session_state.messages
                 ],
             )
         )
         st.session_state.messages.append({"role": "assistant", "content": response})
+        save_chat_history()
