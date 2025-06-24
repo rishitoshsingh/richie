@@ -6,3 +6,4 @@ langchain-core==0.3.65
 pydantic==2.10.2
 langchain-google-genai==2.1.5
 openai==1.88.0
+dotenv==0.9.9
