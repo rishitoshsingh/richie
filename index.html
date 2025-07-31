@@ -12,6 +12,7 @@
         body {
             margin: 0;
             padding: 0;
+            margin-bottom: 5vh;
         }
 
         body {
@@ -19,27 +20,26 @@
             background-color: #fdfdfd;
             color: #242424;
             line-height: 1.7;
-            max-width: 680px;
-            margin: 0 auto;
-            padding: 2rem 1rem 4rem;
         }
 
         .banner {
             width: 100vw;
-            height: 320px;
-            /* Increased height */
+            height: 500px;
             background-image: url('assets/images/banner.jpg');
-            /* Replace with actual banner path */
             background-position: center;
             background-size: cover;
             background-repeat: no-repeat;
             margin: 0;
             position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
+            margin: 0 calc(50% - 50vw);
+            /* This recenters the full-width banner */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 1rem;
         }
 
         h1,
@@ -172,130 +172,216 @@
         .github-btn:hover {
             text-decoration: none;
         }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(to right, #0077b6, #00b4d8);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            z-index: 100;
+            padding: 0.7rem 1rem;
+            color: white;
+        }
+
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-logo:hover {
+            animation: wiggle 0.5s ease-in-out;
+        }
+
+        .navbar-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
     </style>
 </head>
 
 <body>
+    <div class="container-fluid">
 
-    <div class="banner" role="img" aria-label="Banner image"></div>
-
-    <h1>Richie — A Personal Persona</h1>
-
-    <p>
-        Richie is my AI persona — a Retrieval-Augmented Generation (RAG) system built on top of my projects,
-        experiences, and digital footprint. It’s designed to help others understand my background, skills, and interests
-        through natural conversation.
-    </p>
-
-    <p>
-        Instead of browsing my resume or portfolio, you can simply ask Richie. Whether you're a recruiter, collaborator,
-        or just curious, Richie can answer questions about my work and help you explore opportunities to connect or
-        collaborate with me.
-    </p>
-
-    <a href="https://richie.streamlit.app/" class="chat-btn" target="_blank" rel="noopener noreferrer">
-        <img src="https://0.gravatar.com/avatar/d391fa37f93e8cf1193cba1c40e15fee950e021f4005e52c531f80ba774cf6e8?size=256&d=initials"
-            alt="Chat Icon" />
-        Chat with Richie
-    </a>
-
-    <h2>1. AI Agent Workflow for Codebase Analysis and Vector Storage</h2>
-
-    <p>
-        To give Richie a meaningful memory, I first needed to deeply analyze my entire online presence. especially all
-        my GitHub projects. This required building an intelligent, automated pipeline that could interpret codebases,
-        understand their structure and goals, and organize that knowledge into a searchable form. The result was an
-        agentic AI workflow that processes each project and stores its insights into a vector database.
-    </p>
-
-    <p>
-        This system is modular and inspired by the MapReduce model. It breaks down the analysis into smaller tasks and
-        processes them serially to reduce costs and stay within LLM token constraints. Everything starts with the
-        <strong>File Analyzer Agent</strong>, which scans each individual source file and extracts key information like
-        function responsibilities, logic, and structure.
-    </p>
-
-    <p>
-        When the individual file summaries or their combined output exceeds the input token limit of the LLM, the
-        <strong>Collapser Agent</strong> steps in to intelligently condense the information while preserving critical
-        details. The refined summaries are then passed to the <strong>Project Analyzer Agent</strong>, which constructs
-        a high-level understanding — covering project goals, architecture, and development experience. At the top sits
-        the <strong>Orchestrator Node</strong>, which coordinates the agents, ensures orderly execution, and manages
-        resource efficiency.
-    </p>
-
-
-    <img src="summarizer-graph.jpeg" alt="Codebase Agent Flow" class="blog-image" />
-    <div class="caption">Diagram: Modular LLM agent flow for project comprehension</div>
-
-    <p>
-        The final structured summaries are embedded into a vector database. This forms the long-term memory of Richie —
-        enriched with data from not just code analysis, but also my resume, portfolio writeups, and professional
-        profiles. All of this enables Richie to recall and explain my work in a detailed, context-aware way.
-    </p>
-
-    <h2>2. AI Workflow Using a RAG System for Smart Query Answering</h2>
-
-    <p>
-        With the database ready, Richie uses a Retrieval-Augmented Generation (RAG) system to answer questions in real
-        time. The flow starts with a <strong>Query Classification Agent</strong>, which categorizes the query as
-        document-based, general, or out-of-scope. This ensures that only relevant requests consume compute resources.
-    </p>
-
-    <p>
-        Next, a <strong>Prompt Rewriting Agent</strong> improves vague questions. For example, “Tell me about your AI
-        project” becomes “What problem does your multi-agent AI system solve, and how?” This boosts the accuracy of
-        context retrieval.
-    </p>
-
-    <p>
-        The refined query is passed to the <strong>Context Chatbot Agent</strong>, which uses it to fetch relevant
-        chunks from the vector DB. The final response is then generated using a carefully chosen LLM. If the query is
-        conversational or casual, a lightweight <strong>General Chatbot Agent</strong> handles it. For unrelated or
-        unsafe queries, an <strong>Out-of-Scope Agent</strong> provides a fallback message.
-    </p>
-
-    <img src="richie_graph.png" alt="RAG Flow Diagram" class="blog-image" />
-    <div class="caption">Diagram: RAG agent structure with classification and routing</div>
-
-    <p>
-        The result is a structured, memory-efficient, and cost-conscious AI persona that scales with intelligence —
-        delivering useful answers without wasting tokens.
-    </p>
-
-    <p>
-        Richie is a step toward building AI systems that can represent humans — not just by relaying facts, but by
-        understanding context, voice, and intent. Whether you're curious about my projects or hiring for a team, Richie
-        is ready to chat.
-    </p>
-
-    <div class="text-center mt-5">
-        <a href="https://github.com/rishitoshsingh/richie" target="_blank"
-            class="btn btn-glass d-inline-flex align-items-center gap-2 px-4 py-2 github-btn">
-            <i class="bi bi-github fs-5"></i>
-            <span class="align-middle">View on GitHub</span>
-        </a>
-    </div>
-
-    <div class="author-box">
-        <img src="https://media.licdn.com/dms/image/v2/D5603AQH5ldf1BCFksg/profile-displayphoto-shrink_400_400/B56ZTiRfUBHEAg-/0/1738963023384?e=1756339200&v=beta&t=65tJVJcAJx8M1ObSG8vCzLlAIzyu8QjZ6VH0sw0_PME"
-            alt="Author" class="author-image" />
-        <div class="author-details">
-            <h3>Rishitosh Singh</h3>
-            <p>Builder of Richie, passionate about AI, agents, and automation.</p>
-            <div class="socials">
-                <a href="https://github.com/rishitoshsingh" class="social-btn" target="_blank" aria-label="GitHub">
-                    <i class="bi bi-github"></i>
-                </a>
-                <a href="https://linkedin.com/in/rishitoshsingh" class="social-btn" target="_blank"
-                    aria-label="LinkedIn">
-                    <i class="bi bi-linkedin"></i>
-                </a>
-                <a href="mailto:rishitoshs@gmail.com" class="social-btn" aria-label="Email">
-                    <i class="bi bi-envelope-fill"></i>
+        <nav class="navbar navbar-dark sticky-top">
+            <div class="navbar-content">
+                <a href="https://rishitoshsingh.github.io/"
+                    style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+                    <img src="https://0.gravatar.com/avatar/d391fa37f93e8cf1193cba1c40e15fee950e021f4005e52c531f80ba774cf6e8?size=64&d=initials"
+                        alt="Logo" class="navbar-logo" />
+                    <span class="navbar-title">Rishitosh Singh</span>
                 </a>
             </div>
+        </nav>
+
+        <div class="container">
+            <div class="banner" role="img" aria-label="Banner image"></div>
+
+            <h1>Richie — A Personal Persona</h1>
+            <p>
+                Richie is my AI persona — a Retrieval-Augmented Generation (RAG) system built on top of my projects,
+                experiences, and digital footprint. It’s designed to help others understand my background, skills,
+                and
+                interests
+                through natural conversation.
+            </p>
+            <p>
+                Instead of browsing my resume or portfolio, you can simply ask Richie. Whether you're a recruiter,
+                collaborator,
+                or just curious, Richie can answer questions about my work and help you explore opportunities to connect
+                or
+                collaborate with me.
+            </p>
+
+            <a href="https://richie.streamlit.app/" class="chat-btn" target="_blank" rel="noopener noreferrer">
+                <img src="https://0.gravatar.com/avatar/d391fa37f93e8cf1193cba1c40e15fee950e021f4005e52c531f80ba774cf6e8?size=256&d=initials"
+                    alt="Chat Icon" />
+                Chat with Richie
+            </a>
+
+            <h2>1. AI Agent Workflow for Codebase Analysis and Vector Storage</h2>
+
+            <p>
+                To give Richie a meaningful memory, I first needed to deeply analyze my entire online presence.
+                especially
+                all
+                my GitHub projects. This required building an intelligent, automated pipeline that could interpret
+                codebases,
+                understand their structure and goals, and organize that knowledge into a searchable form. The result was
+                an
+                agentic AI workflow that processes each project and stores its insights into a vector database.
+            </p>
+
+            <p>
+                This system is modular and inspired by the MapReduce model. It breaks down the analysis into smaller
+                tasks
+                and
+                processes them serially to reduce costs and stay within LLM token constraints. Everything starts with
+                the
+                <strong>File Analyzer Agent</strong>, which scans each individual source file and extracts key
+                information
+                like
+                function responsibilities, logic, and structure.
+            </p>
+
+            <p>
+                When the individual file summaries or their combined output exceeds the input token limit of the LLM,
+                the
+                <strong>Collapser Agent</strong> steps in to intelligently condense the information while preserving
+                critical
+                details. The refined summaries are then passed to the <strong>Project Analyzer Agent</strong>, which
+                constructs
+                a high-level understanding — covering project goals, architecture, and development experience. At the
+                top
+                sits
+                the <strong>Orchestrator Node</strong>, which coordinates the agents, ensures orderly execution, and
+                manages
+                resource efficiency.
+            </p>
+
+
+            <img src="summarizer-graph.jpeg" alt="Codebase Agent Flow" class="blog-image" />
+            <div class="caption">Diagram: Modular LLM agent flow for project comprehension</div>
+
+            <p>
+                The final structured summaries are embedded into a vector database. This forms the long-term memory of
+                Richie —
+                enriched with data from not just code analysis, but also my resume, portfolio writeups, and professional
+                profiles. All of this enables Richie to recall and explain my work in a detailed, context-aware way.
+            </p>
+
+            <h2>2. AI Workflow Using a RAG System for Smart Query Answering</h2>
+
+            <p>
+                With the database ready, Richie uses a Retrieval-Augmented Generation (RAG) system to answer questions
+                in
+                real
+                time. The flow starts with a <strong>Query Classification Agent</strong>, which categorizes the query as
+                document-based, general, or out-of-scope. This ensures that only relevant requests consume compute
+                resources.
+            </p>
+
+            <p>
+                Next, a <strong>Prompt Rewriting Agent</strong> improves vague questions. For example, “Tell me about
+                your
+                AI
+                project” becomes “What problem does your multi-agent AI system solve, and how?” This boosts the accuracy
+                of
+                context retrieval.
+            </p>
+
+            <p>
+                The refined query is passed to the <strong>Context Chatbot Agent</strong>, which uses it to fetch
+                relevant
+                chunks from the vector DB. The final response is then generated using a carefully chosen LLM. If the
+                query
+                is
+                conversational or casual, a lightweight <strong>General Chatbot Agent</strong> handles it. For unrelated
+                or
+                unsafe queries, an <strong>Out-of-Scope Agent</strong> provides a fallback message.
+            </p>
+
+            <img src="richie_graph.png" alt="RAG Flow Diagram" class="blog-image" />
+            <div class="caption">Diagram: RAG agent structure with classification and routing</div>
+
+            <p>
+                The result is a structured, memory-efficient, and cost-conscious AI persona that scales with
+                intelligence —
+                delivering useful answers without wasting tokens.
+            </p>
+
+            <p>
+                Richie is a step toward building AI systems that can represent humans — not just by relaying facts, but
+                by
+                understanding context, voice, and intent. Whether you're curious about my projects or hiring for a team,
+                Richie
+                is ready to chat.
+            </p>
+
+            <div class="text-center mt-5">
+                <a href="https://github.com/rishitoshsingh/richie" target="_blank"
+                    class="btn btn-glass d-inline-flex align-items-center gap-2 px-4 py-2 github-btn">
+                    <i class="bi bi-github fs-5"></i>
+                    <span class="align-middle">View on GitHub</span>
+                </a>
+            </div>
+
+            <div class="author-box">
+                <img src="https://media.licdn.com/dms/image/v2/D5603AQH5ldf1BCFksg/profile-displayphoto-shrink_400_400/B56ZTiRfUBHEAg-/0/1738963023384?e=1756339200&v=beta&t=65tJVJcAJx8M1ObSG8vCzLlAIzyu8QjZ6VH0sw0_PME"
+                    alt="Author" class="author-image" />
+                <div class="author-details">
+                    <h3>Rishitosh Singh</h3>
+                    <p>Builder of Richie, passionate about AI, agents, and automation.</p>
+                    <div class="socials">
+                        <a href="https://github.com/rishitoshsingh" class="social-btn" target="_blank"
+                            aria-label="GitHub">
+                            <i class="bi bi-github"></i>
+                        </a>
+                        <a href="https://linkedin.com/in/rishitoshsingh" class="social-btn" target="_blank"
+                            aria-label="LinkedIn">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="mailto:rishitoshs@gmail.com" class="social-btn" aria-label="Email">
+                            <i class="bi bi-envelope-fill"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </div>
 
 </body>
