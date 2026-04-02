@@ -4,395 +4,928 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Richie — A Personal Persona</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <title>Richie | Case Study</title>
     <style>
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            margin-bottom: 5vh;
+        :root {
+            --bg: #f4efe4;
+            --bg-deep: #e8decb;
+            --panel: rgba(255, 251, 243, 0.88);
+            --panel-strong: #113f37;
+            --ink: #3f4138;
+            --ink-strong: #1f241c;
+            --muted: #6d7167;
+            --accent: #e0a75f;
+            --accent-strong: #8b4d16;
+            --border: rgba(45, 58, 41, 0.12);
+            --shadow: 0 20px 60px rgba(23, 30, 20, 0.08);
+            --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+            --font-body: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #fdfdfd;
-            color: #242424;
-            line-height: 1.7;
-        }
-
-        .banner {
-            width: 100vw;
-            height: 500px;
-            background-image: url('assets/images/banner.jpg');
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
+            min-height: 100%;
             margin: 0;
-            position: relative;
-            margin: 0 calc(50% - 50vw);
-            /* This recenters the full-width banner */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            color: var(--ink);
+            font-family: var(--font-body);
+            background:
+                radial-gradient(circle at top, rgba(224, 167, 95, 0.16), transparent 24rem),
+                linear-gradient(180deg, var(--bg), var(--bg-deep));
+            background-attachment: fixed;
         }
 
-        .container {
-            max-width: 680px;
-            margin: 0 auto;
-            padding: 0 1rem;
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(17, 63, 55, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(17, 63, 55, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.75), transparent);
         }
 
         h1,
-        h2 {
-            font-weight: 700;
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
+        h2,
+        h3,
+        p,
+        ul {
+            margin: 0;
         }
 
-        h1 {
-            font-size: 2.4rem;
-        }
-
-        h2 {
-            font-size: 1.6rem;
-            color: #0077b6;
-        }
-
-        p {
-            margin-bottom: 1.5rem;
+        img {
+            display: block;
+            max-width: 100%;
         }
 
         a {
-            color: #0077b6;
-            text-decoration: none;
+            color: inherit;
         }
 
-        a:hover {
-            text-decoration: underline;
+        .page-shell {
+            width: min(1180px, calc(100% - 2rem));
+            margin: 0 auto;
+            padding: 2rem 0 4rem;
         }
 
-        .chat-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background-color: #0077b6;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-            margin-bottom: 2rem;
-        }
-
-        .chat-btn:hover {
-            background-color: #005f90;
-            text-decoration: none;
-        }
-
-        .chat-btn img {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-        }
-
-        .blog-image {
-            width: 90%;
-            max-width: 600px;
-            margin: 2rem auto;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-        }
-
-        .caption {
-            font-size: 0.9rem;
-            color: #555;
-            text-align: center;
-            margin-top: 0.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .author-box {
-            border-top: 1px solid #e0e0e0;
-            margin-top: 3rem;
-            padding-top: 2rem;
+        .topbar {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 1.5rem;
-        }
-
-        .author-image {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .author-details h3 {
-            margin: 0;
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .author-details p {
-            margin: 0.2rem 0 0.8rem;
-            font-size: 1rem;
-            color: #666;
-        }
-
-        .socials {
-            display: flex;
-            gap: 0.7rem;
-        }
-
-        .social-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #f1f1f1;
-            color: #333;
-            font-size: 1.2rem;
-            transition: background 0.3s ease;
-        }
-
-        .social-btn:hover {
-            background: #d0d0d0;
-            color: #000;
-        }
-
-        .github-btn {
-            text-decoration: none;
-            vertical-align: middle;
-        }
-
-        .github-btn:hover {
-            text-decoration: none;
-        }
-
-        .navbar {
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            padding: 0.95rem 1.25rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: rgba(255, 251, 243, 0.72);
+            backdrop-filter: blur(16px);
             position: sticky;
-            top: 0;
-            width: 100%;
-            background: linear-gradient(to right, #0077b6, #00b4d8);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-            z-index: 100;
-            padding: 0.7rem 1rem;
-            color: white;
+            top: 1rem;
+            z-index: 10;
         }
 
-        .navbar-content {
+        .wordmark {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--ink-strong);
+            text-decoration: none;
+        }
+
+        .topbar-links {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             gap: 1rem;
         }
 
-        .navbar-logo {
-            width: 42px;
-            height: 42px;
+        .topbar-links a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        .topbar-links a:hover,
+        .wordmark:hover {
+            color: var(--accent-strong);
+        }
+
+        .hero-panel,
+        .panel,
+        .stat-card,
+        .visual-card,
+        .cta-band {
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            background: var(--panel);
+            box-shadow: var(--shadow);
+        }
+
+        .hero-panel {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+            gap: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background:
+                radial-gradient(circle at top left, rgba(224, 167, 95, 0.22), transparent 24rem),
+                linear-gradient(145deg, rgba(255, 250, 240, 0.94), rgba(251, 247, 238, 0.88));
+        }
+
+        .hero-banner {
+            min-height: 24rem;
+            border-radius: 22px;
+            overflow: hidden;
+            border: 1px solid rgba(139, 77, 22, 0.1);
+            background:
+                linear-gradient(rgba(17, 63, 55, 0.1), rgba(17, 63, 55, 0.16)),
+                url("assets/images/banner.jpg") center / cover no-repeat;
+        }
+
+        .hero-copy {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0.5rem 0;
+        }
+
+        .eyebrow {
+            font-size: 0.78rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent-strong);
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 0.98;
+            letter-spacing: -0.03em;
+            color: var(--ink-strong);
+        }
+
+        h1 {
+            font-size: clamp(2.7rem, 7vw, 5rem);
+            max-width: 10ch;
+        }
+
+        h2 {
+            font-size: clamp(1.85rem, 4vw, 2.5rem);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        .hero-summary,
+        .panel p,
+        .panel li,
+        .cta-band p {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: var(--ink);
+        }
+
+        .hero-summary {
+            max-width: 60ch;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 2rem;
+            padding: 0.34rem 0.78rem;
+            border-radius: 999px;
+            border: 1px solid rgba(139, 77, 22, 0.16);
+            background: rgba(224, 167, 95, 0.12);
+            color: var(--accent-strong);
+            font-size: 0.84rem;
+        }
+
+        .hero-actions,
+        .cta-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.85rem;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            min-height: 3rem;
+            padding: 0.8rem 1.25rem;
+            border-radius: 999px;
+            font-weight: 600;
+            line-height: 1;
+            text-decoration: none;
+            transition:
+                transform 180ms ease,
+                background-color 180ms ease,
+                border-color 180ms ease;
+        }
+
+        .button:hover,
+        .topbar-links a:hover,
+        .wordmark:hover {
+            transform: translateY(-1px);
+        }
+
+        .button-primary {
+            background: var(--accent);
+            color: #1e160f;
+        }
+
+        .button-secondary {
+            border: 1px solid rgba(21, 70, 61, 0.18);
+            background: rgba(255, 255, 255, 0.68);
+            color: var(--ink-strong);
+        }
+
+        .button-icon {
+            width: 1rem;
+            height: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .button-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .button-icon-image {
+            width: 1rem;
+            height: 1rem;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
+            flex-shrink: 0;
         }
 
-        .navbar-logo:hover {
-            animation: wiggle 0.5s ease-in-out;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .navbar-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: 0.5px;
-            position: relative;
+        .stack-section {
+            padding: 1.6rem 1.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .stack-card {
+            display: grid;
+            place-content: center;
+            justify-items: center;
+            gap: 0.7rem;
+            min-height: 7.25rem;
+            padding: 1rem 0.7rem 0.9rem;
+            border-radius: 20px;
+            border: 1px solid rgba(139, 77, 22, 0.16);
+            background:
+                linear-gradient(180deg, rgba(255, 251, 243, 0.9), rgba(255, 249, 239, 0.82));
+            color: var(--ink-strong);
+            text-align: center;
+        }
+
+        .stack-card img {
+            width: 2rem;
+            height: 2rem;
+            object-fit: contain;
+        }
+
+        .stack-card span {
+            font-size: 0.92rem;
+            line-height: 1.2;
+        }
+
+        .stat-card {
+            padding: 1.4rem;
+            background: rgba(255, 251, 243, 0.68);
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--ink-strong);
+        }
+
+        .stat-label {
+            margin-top: 0.35rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel {
+            padding: 2rem;
+        }
+
+        .panel-stack {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .section-heading {
+            margin-bottom: 1.25rem;
+        }
+
+        .bullet-list {
+            padding-left: 1.2rem;
+        }
+
+        .bullet-list li+li {
+            margin-top: 0.65rem;
+        }
+
+        .stack {
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .entry {
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .entry:first-child {
+            padding-top: 0;
+            border-top: 0;
+        }
+
+        .entry-title {
+            margin-bottom: 0.45rem;
+            color: var(--accent-strong);
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .visual-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+            align-items: start;
+        }
+
+        .visual-card {
+            overflow: hidden;
+            background: rgba(255, 251, 243, 0.92);
+        }
+
+        .visual-card img {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .workflow-card img {
+            aspect-ratio: 16 / 10;
+            object-fit: contain;
+            padding: 1rem;
+        }
+
+        .visual-copy {
+            padding: 1.35rem 1.5rem 1.55rem;
+        }
+
+        .visual-copy p {
+            margin-top: 0.45rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .visual-section {
+            padding: 2rem;
+        }
+
+        .cta-band {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+            gap: 1.5rem;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            background:
+                linear-gradient(180deg, rgba(18, 62, 54, 0.98), rgba(13, 42, 37, 0.98)),
+                var(--panel-strong);
+            color: #f7f0e1;
+        }
+
+        .cta-band h2,
+        .cta-band h3,
+        .cta-band p,
+        .cta-band a,
+        .cta-band .muted {
+            color: #f7f0e1;
+        }
+
+        .author-card {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.25rem;
+            border: 1px solid rgba(247, 240, 225, 0.14);
+            border-radius: 22px;
+            background: rgba(247, 240, 225, 0.08);
+        }
+
+        .author-image {
+            width: 4.75rem;
+            height: 4.75rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(247, 240, 225, 0.18);
+        }
+
+        .author-name {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+        }
+
+        .social-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            min-height: 2.7rem;
+            padding: 0.7rem 1rem;
+            border: 1px solid rgba(247, 240, 225, 0.18);
+            border-radius: 999px;
+            background: rgba(247, 240, 225, 0.08);
+            color: rgba(247, 240, 225, 0.9);
+            text-decoration: none;
+            transition:
+                transform 180ms ease,
+                background-color 180ms ease,
+                border-color 180ms ease;
+        }
+
+        .social-link:hover {
+            color: #fff7ea;
+            background: rgba(247, 240, 225, 0.14);
+            border-color: rgba(247, 240, 225, 0.3);
+        }
+
+        .social-link-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+        }
+
+        .social-link-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 960px) {
+            .hero-panel,
+            .content-grid,
+            .cta-band,
+            .stats-grid,
+            .visual-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stack-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .workflow-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-shell {
+                width: min(100% - 1rem, 1180px);
+                padding-top: 1rem;
+            }
+
+            .topbar,
+            .hero-panel,
+            .panel,
+            .visual-card,
+            .cta-band {
+                border-radius: 22px;
+            }
+
+            .topbar {
+                position: static;
+            }
+
+            .hero-banner {
+                min-height: 16rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-
-        <nav class="navbar navbar-dark sticky-top">
-            <div class="navbar-content">
-                <a href="https://rishitoshsingh.github.io/"
-                    style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
-                    <img src="https://0.gravatar.com/avatar/d391fa37f93e8cf1193cba1c40e15fee950e021f4005e52c531f80ba774cf6e8?size=64&d=initials"
-                        alt="Logo" class="navbar-logo" />
-                    <span class="navbar-title">Rishitosh Singh</span>
-                </a>
-                <ul
-                    style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0; font-size: 1.05rem;color: white;">
-                    <li>
-                        <a href="https://rishitoshsingh.github.io/"
-                            style="color: #e0e0e0; text-decoration: none;">Home</a>
-                    </li>
-                    <li style="color: #ccc;">&gt;</li>
-                    <li style="color: #f8f9fa; font-weight: 500;">Richie</li>
-                </ul>
+    <main class="page-shell">
+        <nav class="topbar">
+            <a class="wordmark" href="https://rishitoshsingh.github.io/">Rishitosh Kumar Singh</a>
+            <div class="topbar-links">
+                <a href="https://rishitoshsingh.github.io/">Portfolio</a>
+                <a href="#overview">Overview</a>
+                <a href="#memory">Memory System</a>
+                <a href="#rag">RAG Flow</a>
+                <a href="#visuals">Visuals</a>
             </div>
         </nav>
 
-        <div class="container">
-            <div class="banner" role="img" aria-label="Banner image"></div>
+        <section class="hero-panel" id="overview">
+            <div class="hero-copy">
+                <p class="eyebrow">Case Study · Applied AI Persona</p>
+                <h1>Richie</h1>
+                <p class="hero-summary">
+                    A personal AI persona built on retrieval, agentic codebase analysis, and structured memory so
+                    recruiters, collaborators, and curious users can explore my work through conversation instead of
+                    static documents.
+                </p>
+                <div class="hero-meta">
+                    <span class="pill">RAG system</span>
+                    <span class="pill">Agent workflows</span>
+                    <span class="pill">Vector memory</span>
+                    <span class="pill">Portfolio-aware chat</span>
+                </div>
+                <div class="hero-actions">
+                    <a class="button button-primary" href="https://richie.streamlit.app/" target="_blank"
+                        rel="noreferrer">
+                        <img class="button-icon-image" src="https://avatars.githubusercontent.com/u/30952286?s=64"
+                            alt="Rishitosh Kumar Singh avatar" />
+                        Chat with Richie
+                    </a>
+                    <a class="button button-secondary" href="https://github.com/rishitoshsingh/richie" target="_blank"
+                        rel="noreferrer">
+                        <span class="button-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2C6.48 2 2 6.58 2 12.24c0 4.53 2.87 8.37 6.84 9.72.5.1.68-.22.68-.49 0-.24-.01-1.05-.01-1.9-2.78.62-3.37-1.21-3.37-1.21-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .08 1.53 1.05 1.53 1.05.9 1.57 2.36 1.12 2.93.86.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.1 0-1.13.39-2.05 1.03-2.78-.1-.27-.45-1.32.1-2.75 0 0 .84-.28 2.75 1.06A9.3 9.3 0 0 1 12 6.84c.85 0 1.7.12 2.49.35 1.9-1.34 2.74-1.06 2.74-1.06.56 1.43.21 2.48.11 2.75.64.73 1.03 1.65 1.03 2.78 0 3.97-2.35 4.83-4.58 5.09.36.32.68.95.68 1.92 0 1.39-.01 2.5-.01 2.84 0 .27.18.6.69.49A10.18 10.18 0 0 0 22 12.24C22 6.58 17.52 2 12 2Z" />
+                            </svg>
+                        </span>
+                        View Repository
+                    </a>
+                    <a class="button button-secondary" href="https://rishitoshsingh.github.io/" rel="noreferrer">
+                        <span class="button-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 18l-6-6 6-6" />
+                            </svg>
+                        </span>
+                        Back to Portfolio
+                    </a>
+                </div>
+            </div>
+            <div class="hero-banner" role="img" aria-label="Richie banner image"></div>
+        </section>
 
-            <h1>Richie — A Personal Persona</h1>
-            <p>
-                Richie is my AI persona — a Retrieval-Augmented Generation (RAG) system built on top of my projects,
-                experiences, and digital footprint. It’s designed to help others understand my background, skills,
-                and
-                interests
-                through natural conversation.
-            </p>
-            <p>
-                Instead of browsing my resume or portfolio, you can simply ask Richie. Whether you're a recruiter,
-                collaborator,
-                or just curious, Richie can answer questions about my work and help you explore opportunities to connect
-                or
-                collaborate with me.
-            </p>
+        <section class="stats-grid" aria-label="Project summary">
+            <article class="stat-card">
+                <div class="stat-value">2</div>
+                <p class="stat-label">Core AI flows: codebase memory generation and live retrieval-based answering.</p>
+            </article>
+            <article class="stat-card">
+                <div class="stat-value">Agentic</div>
+                <p class="stat-label">Uses specialized agents for summarization, collapsing, classification, and routing.</p>
+            </article>
+            <article class="stat-card">
+                <div class="stat-value">Vector</div>
+                <p class="stat-label">Stores structured project memory for semantic lookup across repos and personal data.</p>
+            </article>
+            <article class="stat-card">
+                <div class="stat-value">Persona</div>
+                <p class="stat-label">Answers questions about projects, experience, and technical background in context.</p>
+            </article>
+        </section>
 
-            <a href="https://richie.streamlit.app/" class="chat-btn" target="_blank" rel="noopener noreferrer">
-                <img src="https://0.gravatar.com/avatar/d391fa37f93e8cf1193cba1c40e15fee950e021f4005e52c531f80ba774cf6e8?size=256&d=initials"
-                    alt="Chat Icon" />
-                Chat with Richie
-            </a>
+        <section class="panel stack-section" aria-label="Tech stack">
+            <div class="section-heading">
+                <p class="eyebrow">Tech Stack</p>
+                <h2>Core systems behind Richie</h2>
+            </div>
+            <div class="stack-grid">
+                <div class="stack-card">
+                    <img src="assets/tech/python.png" alt="Python" />
+                    <span>Python</span>
+                </div>
+                <div class="stack-card"><span>RAG</span></div>
+                <div class="stack-card">
+                    <img src="assets/tech/pinecone.png" alt="Pinecone" />
+                    <span>Pinecone</span>
+                </div>
+                <div class="stack-card">
+                    <img src="assets/tech/langchain.png" alt="LangChain" />
+                    <span>LangChain</span>
+                </div>
+                <div class="stack-card"><span>Prompt Routing</span></div>
+                <div class="stack-card">
+                    <img src="assets/tech/streamlit.svg" alt="Streamlit" />
+                    <span>Streamlit</span>
+                </div>
+            </div>
+        </section>
 
-            <h2>1. AI Agent Workflow for Codebase Analysis and Vector Storage</h2>
+        <section class="content-grid">
+            <article class="panel">
+                <div class="section-heading">
+                    <p class="eyebrow">Problem</p>
+                    <h2>Why build an AI persona at all?</h2>
+                </div>
+                <div class="panel-stack">
+                    <p>
+                        Resumes and portfolios are static. They compress experience into short bullet points, but they
+                        do not let someone ask follow-up questions, compare projects, or understand how pieces of work
+                        relate to each other.
+                    </p>
+                    <p>
+                        Richie turns that static material into an interactive layer. Instead of manually reading
+                        repositories, resume lines, and portfolio pages, a user can ask direct questions and get answers
+                        grounded in structured memory.
+                    </p>
+                    <ul class="bullet-list">
+                        <li>Acts as a conversational interface over projects and experience.</li>
+                        <li>Improves discoverability of technical work beyond a traditional resume.</li>
+                        <li>Combines codebase understanding with broader personal/professional context.</li>
+                    </ul>
+                </div>
+            </article>
 
-            <p>
-                To give Richie a meaningful memory, I first needed to deeply analyze my entire online presence.
-                especially
-                all
-                my GitHub projects. This required building an intelligent, automated pipeline that could interpret
-                codebases,
-                understand their structure and goals, and organize that knowledge into a searchable form. The result was
-                an
-                agentic AI workflow that processes each project and stores its insights into a vector database.
-            </p>
+            <aside class="panel">
+                <div class="section-heading">
+                    <p class="eyebrow">Audience</p>
+                    <h2>Who it helps</h2>
+                </div>
+                <div class="stack">
+                    <div class="entry">
+                        <h3 class="entry-title">Recruiters</h3>
+                        <p class="muted">Ask about projects, skills, and outcomes without skimming every repo.</p>
+                    </div>
+                    <div class="entry">
+                        <h3 class="entry-title">Collaborators</h3>
+                        <p class="muted">Understand technical background, stack choices, and areas of depth faster.</p>
+                    </div>
+                    <div class="entry">
+                        <h3 class="entry-title">General visitors</h3>
+                        <p class="muted">Explore my work conversationally instead of navigating static pages.</p>
+                    </div>
+                </div>
+            </aside>
+        </section>
 
-            <p>
-                This system is modular and inspired by the MapReduce model. It breaks down the analysis into smaller
-                tasks
-                and
-                processes them serially to reduce costs and stay within LLM token constraints. Everything starts with
-                the
-                <strong>File Analyzer Agent</strong>, which scans each individual source file and extracts key
-                information
-                like
-                function responsibilities, logic, and structure.
-            </p>
+        <section class="architecture-grid" id="memory">
+            <article class="panel">
+                <div class="section-heading">
+                    <p class="eyebrow">Memory System</p>
+                    <h2>Agent workflow for codebase analysis and vector storage</h2>
+                </div>
+                <div class="panel-stack">
+                    <p>
+                        Richie’s memory layer starts with deep codebase analysis across repositories and related
+                        artifacts. The goal is not just to index files, but to build a usable representation of project
+                        intent, structure, responsibilities, and technical decisions.
+                    </p>
+                    <p>
+                        The pipeline is intentionally modular. Individual files are summarized first, then larger
+                        contexts are collapsed when token limits become an issue, and finally project-level summaries
+                        are produced for storage. This keeps the system cost-aware and makes large repositories
+                        tractable.
+                    </p>
+                    <ul class="bullet-list">
+                        <li><strong>File Analyzer Agent</strong> extracts file-level logic and responsibilities.</li>
+                        <li><strong>Collapser Agent</strong> condenses overlong intermediate outputs without dropping key context.</li>
+                        <li><strong>Project Analyzer Agent</strong> produces higher-level project understanding.</li>
+                        <li><strong>Orchestrator Node</strong> coordinates sequencing and resource usage.</li>
+                    </ul>
+                    <p>
+                        The resulting summaries are embedded into a vector database alongside resume text, portfolio
+                        material, and other professional context. That becomes Richie’s long-term memory.
+                    </p>
+                </div>
+            </article>
+        </section>
 
-            <p>
-                When the individual file summaries or their combined output exceeds the input token limit of the LLM,
-                the
-                <strong>Collapser Agent</strong> steps in to intelligently condense the information while preserving
-                critical
-                details. The refined summaries are then passed to the <strong>Project Analyzer Agent</strong>, which
-                constructs
-                a high-level understanding — covering project goals, architecture, and development experience. At the
-                top
-                sits
-                the <strong>Orchestrator Node</strong>, which coordinates the agents, ensures orderly execution, and
-                manages
-                resource efficiency.
-            </p>
+        <section class="architecture-grid" id="rag">
+            <article class="panel">
+                <div class="section-heading">
+                    <p class="eyebrow">Answering Flow</p>
+                    <h2>RAG system for smart query answering</h2>
+                </div>
+                <div class="panel-stack">
+                    <p>
+                        Once the memory layer is built, Richie uses retrieval-augmented generation to answer questions
+                        in real time. The system is not a single prompt over a vector store; it uses routing logic so
+                        different kinds of questions take different paths.
+                    </p>
+                    <ul class="bullet-list">
+                        <li><strong>Query Classification Agent</strong> decides whether the question is document-based, general, or out-of-scope.</li>
+                        <li><strong>Prompt Rewriting Agent</strong> clarifies vague requests before retrieval.</li>
+                        <li><strong>Context Chatbot Agent</strong> pulls relevant memory chunks and assembles context.</li>
+                        <li><strong>General Chatbot / Out-of-Scope Agents</strong> handle casual or irrelevant queries without wasting retrieval resources.</li>
+                    </ul>
+                    <p>
+                        This structure improves relevance, avoids unnecessary token spend, and keeps the experience more
+                        stable than a single undifferentiated prompt chain.
+                    </p>
+                </div>
+            </article>
+        </section>
 
+        <section class="workflow-grid" id="visuals">
+            <article class="visual-card workflow-card">
+                <img src="summarizer-graph.jpeg" alt="Modular LLM agent flow for project comprehension" />
+                <div class="visual-copy">
+                    <h3>Memory-building workflow</h3>
+                    <p>
+                        A staged summarization pipeline lets Richie build usable memory from raw repositories without
+                        exceeding model limits.
+                    </p>
+                </div>
+            </article>
+            <article class="visual-card workflow-card">
+                <img src="richie_graph.png" alt="RAG flow diagram" />
+                <div class="visual-copy">
+                    <h3>Routing and retrieval</h3>
+                    <p>
+                        Richie classifies, rewrites, retrieves, and answers so the final output is grounded in relevant
+                        context rather than generic model completion.
+                    </p>
+                </div>
+            </article>
+        </section>
+        <section class="panel visual-section">
+            <div class="section-heading">
+                <p class="eyebrow">Product View</p>
+                <h2>What makes Richie useful</h2>
+            </div>
+            <div class="content-grid" style="margin-bottom: 0;">
+                <article class="panel" style="padding: 0; border: 0; box-shadow: none; background: transparent;">
+                    <div class="stack">
+                        <div class="entry">
+                            <h3 class="entry-title">Portfolio-aware conversation</h3>
+                            <p>
+                                Richie can answer project and experience questions in a way that feels closer to an
+                                interactive briefing than a static personal site.
+                            </p>
+                        </div>
+                        <div class="entry">
+                            <h3 class="entry-title">Memory with structure</h3>
+                            <p>
+                                The system does not depend on one giant context dump. It builds reusable memory from
+                                modular summaries and retrieval.
+                            </p>
+                        </div>
+                        <div class="entry">
+                            <h3 class="entry-title">Cost-conscious design</h3>
+                            <p>
+                                The pipeline uses staged analysis and routing so large repositories and casual queries
+                                do not burn unnecessary model budget.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+                <article class="panel" style="padding: 0; border: 0; box-shadow: none; background: transparent;">
+                    <div class="stack">
+                        <div class="entry">
+                            <h3 class="entry-title">Explainable project recall</h3>
+                            <p>
+                                Because memory is built from analyzed repos, Richie can explain goals, architecture, and
+                                implementation patterns instead of only repeating keywords.
+                            </p>
+                        </div>
+                        <div class="entry">
+                            <h3 class="entry-title">Useful for hiring and collaboration</h3>
+                            <p>
+                                It lowers the cost of understanding technical work, which is the main reason a personal
+                                AI persona is worth building.
+                            </p>
+                        </div>
+                        <div class="entry">
+                            <h3 class="entry-title">Foundation for broader agent tooling</h3>
+                            <p>
+                                Richie also acts as a practical playground for agent design, retrieval systems, and
+                                memory architecture patterns.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
 
-            <img src="summarizer-graph.jpeg" alt="Codebase Agent Flow" class="blog-image" />
-            <div class="caption">Diagram: Modular LLM agent flow for project comprehension</div>
-
-            <p>
-                The final structured summaries are embedded into a vector database. This forms the long-term memory of
-                Richie —
-                enriched with data from not just code analysis, but also my resume, portfolio writeups, and professional
-                profiles. All of this enables Richie to recall and explain my work in a detailed, context-aware way.
-            </p>
-
-            <h2>2. AI Workflow Using a RAG System for Smart Query Answering</h2>
-
-            <p>
-                With the database ready, Richie uses a Retrieval-Augmented Generation (RAG) system to answer questions
-                in
-                real
-                time. The flow starts with a <strong>Query Classification Agent</strong>, which categorizes the query as
-                document-based, general, or out-of-scope. This ensures that only relevant requests consume compute
-                resources.
-            </p>
-
-            <p>
-                Next, a <strong>Prompt Rewriting Agent</strong> improves vague questions. For example, “Tell me about
-                your
-                AI
-                project” becomes “What problem does your multi-agent AI system solve, and how?” This boosts the accuracy
-                of
-                context retrieval.
-            </p>
-
-            <p>
-                The refined query is passed to the <strong>Context Chatbot Agent</strong>, which uses it to fetch
-                relevant
-                chunks from the vector DB. The final response is then generated using a carefully chosen LLM. If the
-                query
-                is
-                conversational or casual, a lightweight <strong>General Chatbot Agent</strong> handles it. For unrelated
-                or
-                unsafe queries, an <strong>Out-of-Scope Agent</strong> provides a fallback message.
-            </p>
-
-            <img src="richie_graph.png" alt="RAG Flow Diagram" class="blog-image" />
-            <div class="caption">Diagram: RAG agent structure with classification and routing</div>
-
-            <p>
-                The result is a structured, memory-efficient, and cost-conscious AI persona that scales with
-                intelligence —
-                delivering useful answers without wasting tokens.
-            </p>
-
-            <p>
-                Richie is a step toward building AI systems that can represent humans — not just by relaying facts, but
-                by
-                understanding context, voice, and intent. Whether you're curious about my projects or hiring for a team,
-                Richie
-                is ready to chat.
-            </p>
-
-            <div class="text-center mt-5">
-                <a href="https://github.com/rishitoshsingh/richie" target="_blank"
-                    class="btn btn-glass d-inline-flex align-items-center gap-2 px-4 py-2 github-btn">
-                    <i class="bi bi-github fs-5"></i>
-                    <span class="align-middle">View on GitHub</span>
-                </a>
+        <section class="cta-band">
+            <div>
+                <p class="eyebrow" style="color: rgba(247, 240, 225, 0.72);">Project links</p>
+                <h2>Explore the live app or inspect the implementation</h2>
+                <p style="margin-top: 1rem;">
+                    Richie is both a usable AI interface and a case study in personal memory systems, retrieval, and
+                    agent orchestration.
+                </p>
+                <div class="cta-actions" style="margin-top: 1.5rem;">
+                    <a class="button button-primary" href="https://richie.streamlit.app/" target="_blank"
+                        rel="noreferrer">Open Live App</a>
+                    <a class="button button-secondary" href="https://github.com/rishitoshsingh/richie" target="_blank"
+                        rel="noreferrer">View Repository</a>
+                </div>
             </div>
 
-            <div class="author-box">
-                <img src="https://media.licdn.com/dms/image/v2/D5603AQH5ldf1BCFksg/profile-displayphoto-shrink_400_400/B56ZTiRfUBHEAg-/0/1738963023384?e=1756339200&v=beta&t=65tJVJcAJx8M1ObSG8vCzLlAIzyu8QjZ6VH0sw0_PME"
-                    alt="Author" class="author-image" />
-                <div class="author-details">
-                    <h3>Rishitosh Singh</h3>
-                    <p>Builder of Richie, passionate about AI, agents, and automation.</p>
-                    <div class="socials">
-                        <a href="https://github.com/rishitoshsingh" class="social-btn" target="_blank"
-                            aria-label="GitHub">
-                            <i class="bi bi-github"></i>
+            <aside class="author-card">
+                <img class="author-image" src="assets/images/profile.png"
+                    alt="Rishitosh Kumar Singh" />
+                <div>
+                    <div class="author-name">Rishitosh Kumar Singh</div>
+                    <p style="margin-top: 0.35rem;">
+                        Machine learning engineer with experience across data systems, real-time analytics, and applied
+                        AI products.
+                    </p>
+                    <div class="social-row">
+                        <a class="social-link" href="https://github.com/rishitoshsingh" target="_blank"
+                            rel="noreferrer">
+                            <span class="social-link-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.42-4.04-1.42-.55-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.22 1.84 1.22 1.08 1.82 2.82 1.3 3.5 1 .11-.77.42-1.3.76-1.6-2.67-.3-5.47-1.32-5.47-5.87 0-1.3.47-2.36 1.23-3.2-.12-.3-.53-1.5.12-3.12 0 0 1-.32 3.3 1.22a11.6 11.6 0 0 1 6 0c2.3-1.54 3.3-1.22 3.3-1.22.65 1.62.24 2.82.12 3.12.77.84 1.23 1.9 1.23 3.2 0 4.56-2.8 5.57-5.48 5.86.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.58A12 12 0 0 0 12 .5Z" />
+                                </svg>
+                            </span>
+                            <span>GitHub</span>
                         </a>
-                        <a href="https://linkedin.com/in/rishitoshsingh" class="social-btn" target="_blank"
-                            aria-label="LinkedIn">
-                            <i class="bi bi-linkedin"></i>
+                        <a class="social-link" href="https://linkedin.com/in/rishitoshsingh" target="_blank"
+                            rel="noreferrer">
+                            <span class="social-link-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="M6.94 8.5A1.56 1.56 0 1 1 6.94 5.4a1.56 1.56 0 0 1 0 3.1ZM5.6 9.68h2.68V18H5.6V9.68Zm4.35 0h2.57v1.14h.04c.36-.68 1.23-1.4 2.54-1.4 2.72 0 3.22 1.79 3.22 4.12V18h-2.68v-3.96c0-.94-.02-2.16-1.31-2.16-1.31 0-1.51 1.03-1.51 2.09V18H9.95V9.68Z" />
+                                </svg>
+                            </span>
+                            <span>LinkedIn</span>
                         </a>
-                        <a href="mailto:rishitoshs@gmail.com" class="social-btn" aria-label="Email">
-                            <i class="bi bi-envelope-fill"></i>
+                        <a class="social-link" href="mailto:rishitoshs@gmail.com">
+                            <span class="social-link-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 18.5v-13Zm2.12-.5 5.88 5.04L17.88 5H6.12Zm11.88 1.32-5.35 4.58a1 1 0 0 1-1.3 0L6 6.32V18.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5V6.32Z" />
+                                </svg>
+                            </span>
+                            <span>Email</span>
                         </a>
                     </div>
                 </div>
-            </div>
-        </div>
-
-    </div>
-
+            </aside>
+        </section>
+    </main>
 </body>
 
 </html>
